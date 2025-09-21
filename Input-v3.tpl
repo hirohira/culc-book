@@ -82,6 +82,8 @@
     ２００部</label>
     <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_C}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_C} checked{/if}>
     ３００部<span class="red">（オススメ）</span></label><br />
+    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_L}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_L} checked{/if}>
+    ４００部</label>
     <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_D}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_D} checked{/if}>
     ５００部</label>
     <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_E}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_E} checked{/if}>
@@ -94,8 +96,6 @@
 
   <div class="number">
     <h3>ページ数<span class="modal-q"><a href="https://www.publishing-house.jp/flow.html#08" target="_blank">?</a></span></h3>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_K}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_K} checked{/if}>
-    ３２ｐ</label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_L}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_L} checked{/if}>
     ４８ｐ</label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_M}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_M} checked{/if}>
@@ -128,6 +128,8 @@
     ２７２ｐ</label>　
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_Q}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_Q} checked{/if}>
     ２８８ｐ</label>
+    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_R}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_R} checked{/if}>
+    ３２０ｐ</label>
      <br clear="clear">
   <span class="green-bk">（含まれるカラーページ）</span>
 <label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_B}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_B} checked{/if}>８ｐ</label>　
