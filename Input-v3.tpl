@@ -183,7 +183,7 @@
 
   <div class="number">
     <h3>取材日数</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_B}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_B} checked{/if}>
+    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_B}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_B} checked{/if}>
     １日</label>
     <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_C}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_C} checked{/if}>
     ２日</label>
@@ -197,7 +197,7 @@
     ６日</label>
     <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_H}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_H} checked{/if}>
     ７日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_A}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_A} checked{/if}>
+    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_A}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_A} checked{/if}>
     なし</label>
     <br clear="clear"> 
   </div>
