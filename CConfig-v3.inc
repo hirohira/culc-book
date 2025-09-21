@@ -109,6 +109,7 @@ define('DEF_PAGE_I', 240);
 define('DEF_PAGE_J', 256);
 define('DEF_PAGE_P', 272);
 define('DEF_PAGE_Q', 288);
+define('DEF_PAGE_R', 320);
 
 // カラーページの選択肢を定義
 define('DEF_COLAR_A', 0);         // なし 2024-10-18追加
@@ -122,8 +123,9 @@ define('DEF_COLAR_D_DISP', '全ページ');     // オールカラー 2024-10-18
 
 
 // ⑦大きさ(大分類)
-define('DEF_SIZE_A', 0);       // 四六判・B6判・A5判
+define('DEF_SIZE_A', 0);       // 四六判・B6判
 define('DEF_SIZE_B', 1);       // B5判・A4判
+define('DEF_SIZE_C', 2);       // A5判
 
 // ⑦大きさ(小分類)
 define('DEF_SIZE_S_A', 0);     // 四六判
