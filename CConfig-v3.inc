@@ -85,6 +85,7 @@ define('DEF_CIRCULATE_I', 50);
 define('DEF_CIRCULATE_A', 100);
 define('DEF_CIRCULATE_B', 200);
 define('DEF_CIRCULATE_C', 300);
+define('DEF_CIRCULATE_L', 400);
 define('DEF_CIRCULATE_D', 500);
 define('DEF_CIRCULATE_E', 1000);
 define('DEF_CIRCULATE_F', 2000);
