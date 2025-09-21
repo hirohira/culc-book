@@ -279,12 +279,6 @@ switch ($this->_arrPostData['input'][DEF_EST_COLAR]) {
 // DEF_EST_BOOKSにカラーページの倍率を適用
 $this->_arrValue[DEF_EST_BOOKS] *= $_colarMultiplier;
 
-
-    // DEF_SIZE_S_C の場合は価格を1.1倍にする※2021年10月17日追加
-    if ($this->_arrPostData['input'][DEF_EST_SIZE] == DEF_SIZE_S_C) {
-        $this->_arrValue[DEF_EST_BOOKS] *= 1.1;
-    }
-
 		// 取材日数
 		$this->_arrValue[DEF_EST_DAY] = $this->_arrPostData['input'][DEF_EST_DAY] * $_arrEstData[DEF_EST_DAY];
 
@@ -676,6 +670,9 @@ function fncCalcManagingFee($_arrValue)
 			case DEF_CIRCULATE_C: // 300部
 				return DEF_CIRCULATE_C;
 
+			case DEF_CIRCULATE_L: // 400部
+				return DEF_CIRCULATE_L;
+
 			case DEF_CIRCULATE_D: // 500部
 				return DEF_CIRCULATE_D;
 
@@ -702,8 +699,9 @@ function fncCalcManagingFee($_arrValue)
 		switch ($pSize) {
 			case DEF_SIZE_S_A:
 			case DEF_SIZE_S_B:
-			case DEF_SIZE_S_C:
 				return DEF_SIZE_A;
+			case DEF_SIZE_S_C:
+				return DEF_SIZE_C;
 
 			case DEF_SIZE_S_D:
 			case DEF_SIZE_S_E:
