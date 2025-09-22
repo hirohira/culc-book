@@ -810,7 +810,7 @@ function fncCalcManagingFee($_arrValue)
 				= $this->_arrPostData['input'][DEF_EST_DAY];
 		} else {
 			$_arrInit[DEF_EST_DAY]
-				= DEF_DAY_C; // [2018-06v2] DEF_DAY_A;
+				= DEF_DAY_B; // [2018-06v2] DEF_DAY_A;
 		}
 
 		// 新聞広告 ※[2018-06v2] 新規追加
