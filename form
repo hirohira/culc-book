@@ -1274,6 +1274,7 @@ $_body = sprintf($_bodyTmp,
   部数                   ：%s
   ページ数               ：%s
   本の大きさ             ：%s
+  お住まいの地域         ：%s
   取材日数               ：%s
   流通形態               ：%s
   お渡し希望日時         ：%s
@@ -1289,6 +1290,7 @@ END_OF_VAR;
 		                          , $_arrDispStr['input'][DEF_EST_CIRCULATE]
 		                          , $_arrDispStr['input'][DEF_EST_PAGE]
 		                          , $_arrDispStr['input'][DEF_EST_SIZE]
+		                          , $_arrDispStr['input'][DEF_EST_AREA]
 		                          , $_arrDispStr['input'][DEF_EST_DAY]
 								  , $_arrDispStr['input'][DEF_EST_SALES]
 		                          , $_arrDispStr['date']);
