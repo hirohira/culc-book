@@ -498,29 +498,26 @@ private function saveToCSV()
  * 管理費計算
  *
  * @access : private
- * @param  : array $_arrValue 全体金額の配列
+ * @param  : array $_arrValue 各費用の配列
  * @return : integer 管理費
  */
 function fncCalcManagingFee($_arrValue)
 {
     $fee = 0;
+    // 管理費と消費税を除く、それまでの合計金額を算出
+    $subtotal = array_sum($_arrValue);
 
-    // 全体金額から消費税を除いた金額を計算
-    $subtotal = array_sum($_arrValue) - $_arrValue[DEF_EST_TAX];
+    // 書籍の種類に応じて管理費を計算
+    switch ($this->_arrPostData['input'][DEF_EST_TYPE]) {
+        // 「医学書・ビジネス書・実用書」の場合：管理費2倍（合計の20%）
+        case DEF_TYPE_MEDICAL:
+            $fee = floor($subtotal * 0.20);
+            break;
 
-    // 1. 医療系の場合は常に管理費が発生
-    if ($this->_arrPostData['input'][DEF_EST_TYPE] == DEF_TYPE_MEDICAL) {
-        $fee = floor($subtotal * 0.10);  // 基礎の管理費
-
-        // 3. 4ヶ月以内かつ医療系の場合、追加で管理費（全体の10％）が発生
-        if (isWithinFourMonths($this->_arrPostData['date'])) {
-            $fee += floor($subtotal * 0.10);  // 追加の管理費
-        }
-    }
-
-    // 2. 4ヶ月以内の場合は、特急料金のほかに管理費（全体の税抜き金額の10％）が発生
-    elseif (isWithinFourMonths($this->_arrPostData['date'])) {
-        $fee = floor($subtotal * 0.10);  // 通常の管理費（全体の10％）
+        // 「自伝・小説・その他」の場合：管理費1倍（合計の10%）
+        case DEF_TYPE_OTHERS:
+            $fee = floor($subtotal * 0.10);
+            break;
     }
 
     return intval($fee);
