@@ -1009,6 +1009,37 @@ function fncCalcManagingFee($_arrValue)
 				break;
 		}		
 
+// お住まいの地域
+		switch ($this->_arrPostData['input'][DEF_EST_AREA]) {
+			case DEF_AREA_A:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_A_DISP;
+				break;
+			case DEF_AREA_B:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_B_DISP;
+				break;
+			case DEF_AREA_C:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_C_DISP;
+				break;
+			case DEF_AREA_D:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_D_DISP;
+				break;
+			case DEF_AREA_E:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_E_DISP;
+				break;
+			case DEF_AREA_F:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_F_DISP;
+				break;
+			case DEF_AREA_G:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_G_DISP;
+				break;
+			case DEF_AREA_H:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_H_DISP;
+				break;
+			case DEF_AREA_I:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_I_DISP;
+				break;
+		}
+
 		// 販売形態
 		switch ($this->_arrPostData['input'][DEF_EST_SALES]) {
 			case DEF_FORM_A:
