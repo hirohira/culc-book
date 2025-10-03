@@ -1,274 +1,1469 @@
-{include file='Header.tpl'}
+<?php
+/*****************************************************************************
+ * 自動見積もりフォーム
+ *
+ *       Corp: KSS, INC.
+ *
+ *     作成日: 2010/02/22
+ *  ProgramID: form.php
+ *
+ *****************************************************************************/
 
-<div class="sample">
-<h2>自動見積りフォーム</h2>
+require_once "../smarty/Smarty.class.php";
+require_once "../common/CConfig-v3.inc";
 
-<section>
-<div class="auto">
-  <div class="auto-img"><img src="/img/2017/pub-img.jpg" width="166" height="247" alt=""/></div><p>自動見積を希望される方は、下記の質問項目にお答えください。<br>
-    空白欄がある場合は（おすすめ）とある項目で、御見積します。<br>
-    すべての項目の入力が済みましたら、一番下にある<br>
-    「この内容で見積する」というボタンを押してください。<br>
-    見積金額を明示し、<br>
-    お客様の情報を入力していただくページへと進みます。<br>
-    なお、見積内容と金額、お客様の入力情報の確認のため、<br>
-    すべてを入力し終わった後に、確認のメールを１通、<br>
-    お送りさせていただきます。</p>
-    <div class="clear"><hr></div>
-</div>
-</section>
+class CFormAgent
+{
+	// Smarty class
+	var $_objSmty     = null;
 
-<div class="entry form">
-<h4>1.見積入力</h4>
-<form name="frmInput" method="post" action="">
-  <div>
-    <h3>執筆</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="{$smarty.const.DEF_WRITE_A}"{if $arrInit[$smarty.const.DEF_EST_WRITE] == $smarty.const.DEF_WRITE_A} checked{/if}>
-    執筆を依頼する<span class="red">（オススメ）</span></label><br />
-    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="{$smarty.const.DEF_WRITE_B}"{if $arrInit[$smarty.const.DEF_EST_WRITE] == $smarty.const.DEF_WRITE_B} checked{/if}>
-    リライト（あなたの原稿をもとにプロが書き直し）</label><br />
-    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="{$smarty.const.DEF_WRITE_C}"{if $arrInit[$smarty.const.DEF_EST_WRITE] == $smarty.const.DEF_WRITE_C} checked{/if}>
-    自分で書く(無料)</label>
-  
-  </div>
-{*
-▼[2018-06-03] 削除
-  <div class="side-20">
-  <h3>原稿の状態</h3>
-  <span>※上記の質問で、「自分で書く」を選択した方のみ、右の項目にお答えください）」</span><br />
-    <label><input name="input[{$smarty.const.DEF_EST_NOTES}]" type="radio" value="{$smarty.const.DEF_STATE_A}"{if $arrInit[$smarty.const.DEF_EST_NOTES] == $smarty.const.DEF_STATE_A} checked{/if}>
-    テキストデータ<span>（ワードや一太郎）　無料</span></label><br />
-    <label><input name="input[{$smarty.const.DEF_EST_NOTES}]" type="radio" value="{$smarty.const.DEF_STATE_B}"{if $arrInit[$smarty.const.DEF_EST_NOTES] == $smarty.const.DEF_STATE_B} checked{/if}>
-    手書き原稿<span>（目安：１字0.55円　ex.５万字で27500円）</span></label>
-  </div>
+	var $_blnFncFlg   = true;      // 処理フラグ
+	var $_arrPostData = array();   // POSTデータ
+	var $_intMode     = DEF_INPUT; // 画面モード
 
-  <div>
-    <h3>校正（誤字、脱字のチェック）</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_EMEND}]" type="radio" value="{$smarty.const.DEF_MISPRINT_A}"{if $arrInit[$smarty.const.DEF_EST_EMEND] == $smarty.const.DEF_MISPRINT_A} checked{/if}>あり</label><span>（目安：１字0.5円　ex.５万字で25000円）</span><label><span class="red">（オススメ）</span></label><br />
-    <label><input name="input[{$smarty.const.DEF_EST_EMEND}]" type="radio" value="{$smarty.const.DEF_MISPRINT_B}"{if $arrInit[$smarty.const.DEF_EST_EMEND] == $smarty.const.DEF_MISPRINT_B} checked{/if}>なし　無料</label><br />
-    <span>※「執筆」の項目で「自分で書く」以外を選択された場合、校正費用は執筆費用に含まれますので、チェックマークを入れる必要はありません。万が一、入力しても、見積には反映しませんので、ご安心ください。</span>
-  </div>
-▲[2018-06-03] 削除
-*}
-  <div>
-    <h3>書籍体裁<span class="modal-q"><a href="https://www.publishing-house.jp/flow.html#10" target="_blank">?</a></span></h3>
-    <label><input name="input[{$smarty.const.DEF_EST_COVER}]" type="radio" value="{$smarty.const.DEF_BOOK_SOFT}"{if $arrInit[$smarty.const.DEF_EST_COVER] == $smarty.const.DEF_BOOK_SOFT} checked{/if}>
-    並製　ソフトカバー　<span class="red">（オススメ）</span></label>
-    <label><input name="input[{$smarty.const.DEF_EST_COVER}]" type="radio" value="{$smarty.const.DEF_BOOK_HARD}"{if $arrInit[$smarty.const.DEF_EST_COVER] == $smarty.const.DEF_BOOK_HARD} checked{/if}>
-    上製　ハードカバー　</label>
-  </div>
+	var $_arrErrMsg   = array();   // エラーメッセージ
 
-  <div>
-    <h3>書籍の種類</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_TYPE}]" type="radio" value="{$smarty.const.DEF_TYPE_OTHERS}"{if $arrInit[$smarty.const.DEF_EST_TYPE] != $smarty.const.DEF_TYPE_MEDICAL} checked{/if}>
-    自伝・小説・その他　</label>
-  <label><input name="input[{$smarty.const.DEF_EST_TYPE}]" type="radio" value="{$smarty.const.DEF_TYPE_MEDICAL}"{if $arrInit[$smarty.const.DEF_EST_TYPE] == $smarty.const.DEF_TYPE_MEDICAL} checked{/if}>
-    医学書・ビジネス書・実用書　</label>
-    </div>
+	var $_arrValue    = array(DEF_EST_WRITE => 0 // 執筆
+	                      //, DEF_EST_NOTES => 0 // 原稿の状態 [2018-06v2] 廃止
+	                      //, DEF_EST_EMEND => 0 // 校正 [2018-06v2] 廃止
+	                        , DEF_EST_BOOKS => 0 // 書籍体裁・部数・ページ数・大きさ
+	                        , DEF_EST_SALES => 0 // 販売形態
+	                        , DEF_EST_DTP   => 0 // DTP費用
+	                        , DEF_EST_FM    => 0 // 装丁
+	                        , DEF_EST_HASTE => 0 // 特急料金
+	                        , DEF_EST_DAY   => 0 // 取材日数
+	                        , DEF_EST_IMAGE => 0 // 図版イラスト [2018-06v2] 新規追加
+	                        , DEF_EST_AREA  => 0 // お住まいの地域＝交通費 [2018-06v2] 新規追加
+	                        , DEF_EST_AD    => 0 // 新聞広告 [2018-06v2] 新規追加
+	                        , DEF_EST_FAX   => 0 // 書店営業ＦＡＸ [2018-06v2] 新規追加
+	                        , DEF_EST_TYPE  => 0 // 書籍の種類＝管理費 [2022-06v3] 新規追加
+	                        , DEF_EST_COLAR => 0 // カラーページ [2024-10-18] 新規追加
+	                        , DEF_EST_TAX   => 0 // 消費税
+	                        ); // 内訳
+	var $_intSumValue = 0;         // 総額
 
-  <div class="number">
-    <h3>部数<span>※アマゾン販売をご希望の場合は、３０部以上、一般書店流通は、３００部をお選びください</span><span class="modal-q"><a href="https://www.publishing-house.jp/flow.html#07" target="_blank">?</a></span></h3>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_J}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_J} checked{/if}>
-    １０部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_K}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_K} checked{/if}>
-    ２０部</label>
-  　<label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_H}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_H} checked{/if}>
-    ３０部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_I}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_I} checked{/if}>
-    ５０部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_A}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_A} checked{/if}>
-    １００部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_B}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_B} checked{/if}>
-    ２００部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_C}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_C} checked{/if}>
-    ３００部<span class="red">（オススメ）</span></label><br />
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_L}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_L} checked{/if}>
-    ４００部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_D}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_D} checked{/if}>
-    ５００部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_E}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_E} checked{/if}>
-    １０００部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_F}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_F} checked{/if}>
-    ２０００部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_G}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_G} checked{/if}>
-    ３０００部</label> <br clear="clear">
-  </div>
+	/**
+	 * コンストラクタ
+	 *
+	 * @access : public
+	 * @param  : none
+	 * @return : none
+	 */
+	function CFormAgent()
+	{
+		// Smarty Class
+		$this->_objSmty = new Smarty();
 
-  <div class="number">
-    <h3>ページ数<span class="modal-q"><a href="https://www.publishing-house.jp/flow.html#08" target="_blank">?</a></span></h3>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_L}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_L} checked{/if}>
-    ４８ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_M}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_M} checked{/if}>
-    ６４ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_N}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_N} checked{/if}>
-    ８０ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_O}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_O} checked{/if}>
-    ９６ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_A}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_A} checked{/if}>
-    １１２ｐ</label>　<br />
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_B}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_B} checked{/if}>
-    １２８ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_C}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_C} checked{/if}>
-    １４４ｐ<span class="red">（オススメ）</span></label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_D}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_D} checked{/if}>
-    １６０ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_E}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_E} checked{/if}>
-    １７６ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_F}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_F} checked{/if}>
-    １９２ｐ{* [2018-06-03] 削除<span class="red">（オススメ）</span>*}</label>　<br />
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_G}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_G} checked{/if}>
-    ２０８ｐ<span class="red">一般的な書籍</span></label>　
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_H}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_H} checked{/if}>
-    ２２４ｐ　</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_I}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_I} checked{/if}>
-    ２４０ｐ</label>　
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_J}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_J} checked{/if}>
-    ２５６ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_P}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_P} checked{/if}>
-    ２７２ｐ</label>　
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_Q}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_Q} checked{/if}>
-    ２８８ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_R}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_R} checked{/if}>
-    ３２０ｐ</label>
-     <br clear="clear">
-  <span class="green-bk">（含まれるカラーページ）</span>
-<label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_B}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_B} checked{/if}>８ｐ</label>　
-<label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_C}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_C} checked{/if}>１６ｐ</label>
-<label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_D}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_D} checked{/if}>全ページ</label>　
-<label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_A}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_A} checked{/if}>なし</label>
-  
-  </div>
+		// エスケープ制御処理
+		if (count($_POST) > 0 && get_magic_quotes_gpc()) {
+			$_POST = $this->stripslashes_deep($_POST);
+		}
 
-  <div class="number">
-    <h3>大きさ<span class="modal-q"><a href="https://www.publishing-house.jp/flow.html#09" target="_blank">?</a></span></h3>
-    <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_A}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_A} checked{/if}>
-    四六判<span class="red">（オススメ）</span></label>
-  
-    <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_B}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_B} checked{/if}>
-    Ｂ６判 </label>
-    <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_C}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_C} checked{/if}>
-    Ａ５判</label>
-    
-    <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_D}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_D} checked{/if}>
-    Ｂ５判</label>
-    <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_E}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_E} checked{/if}>
-    Ａ４判</label> <br clear="clear">
-    
-  </div>
+		// Postデータ格納
+		$this->_arrPostData = $_POST;
+	}
 
-{* ▼[2018-06-03] 追加 *}
-  <div class="number">
-    <h3>図版イラスト挿入　※当社書き下ろしの場合</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_IMAGE}]" type="radio" value="{$smarty.const.DEF_IMAGE_B}"{if $arrInit[$smarty.const.DEF_EST_IMAGE] == $smarty.const.DEF_IMAGE_B} checked{/if}>５点</label>
-    <label><input name="input[{$smarty.const.DEF_EST_IMAGE}]" type="radio" value="{$smarty.const.DEF_IMAGE_C}"{if $arrInit[$smarty.const.DEF_EST_IMAGE] == $smarty.const.DEF_IMAGE_C} checked{/if}>１０点</label>
-    <label><input name="input[{$smarty.const.DEF_EST_IMAGE}]" type="radio" value="{$smarty.const.DEF_IMAGE_D}"{if $arrInit[$smarty.const.DEF_EST_IMAGE] == $smarty.const.DEF_IMAGE_D} checked{/if}>１５点</label>
-    <label><input name="input[{$smarty.const.DEF_EST_IMAGE}]" type="radio" value="{$smarty.const.DEF_IMAGE_E}"{if $arrInit[$smarty.const.DEF_EST_IMAGE] == $smarty.const.DEF_IMAGE_E} checked{/if}>２０点</label>
-    <label><input name="input[{$smarty.const.DEF_EST_IMAGE}]" type="radio" value="{$smarty.const.DEF_IMAGE_A}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_IMAGE] == $smarty.const.DEF_IMAGE_A} checked{/if}>なし</label>
-  </div>
+	/**
+	 * 処理を実行
+	 *
+	 * @access : public
+	 * @param  : none
+	 * @return : boolean true  正常終了
+	 *                   false 異常終了
+	 */
+	function doProcess()
+	{
+		// お見積りボタン押下
+		if (isset($this->_arrPostData['btnInput'])) {
+			// 入力値チェック
+			if (!$this->fncCheckData_Input()) {
+				return true;
+			}
 
-  <div class="area">
-    <h3>お住まいの地域</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_A}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_A} checked{/if}>北海道</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_B}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_B} checked{/if}>東北</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_C}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_C} checked{/if}>北陸</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_D}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_D} checked{/if}>関東</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_E}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_E} checked{/if}>中部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_F}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_F} checked{/if}>近畿</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_G}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_G} checked{/if}>中国</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_H}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_H} checked{/if}>四国</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_I}"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_I} checked{/if}>九州</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AREA}]" type="radio" value="{$smarty.const.DEF_AREA_J}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_AREA] == $smarty.const.DEF_AREA_J} checked{/if}>取材旅費は実費精算</label>
-  </div>
-{* ▲[2018-06-03] 追加 *}
+			// 見積り計算
+			$this->fncCalc();
 
-  <div class="number">
-    <h3>取材日数</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_B}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_B} checked{/if}>
-    １日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_C}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_C} checked{/if}>
-    ２日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_D}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_D} checked{/if}>
-    ３日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_E}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_E} checked{/if}>
-    ４日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_F}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_F} checked{/if}>
-    ５日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_G}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_G} checked{/if}>
-    ６日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_H}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_H} checked{/if}>
-    ７日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_A}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_A} checked{/if}>
-    なし</label>
-    <br clear="clear"> 
-  </div>
+			// 表示画面に確認画面をセット
+			$this->_intMode = DEF_CNFRM;
 
-{* ▼[2018-06-03] 追加 *}
-  <div class="ad-channel">
-    <h3>新聞広告　※３段1/8スペースの場合</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_B}"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_B} checked{/if}>日本経済新聞</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_C}"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_C} checked{/if}>朝日新聞</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_D}"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_D} checked{/if}>読売新聞</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_E}"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_E} checked{/if}>毎日新聞</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_F}"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_F} checked{/if}>その他都道府県地方新聞</label>
-    <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_A}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_A} checked{/if}>なし</label>
-  </div>
+		// お客様情報の入力確認
+		} else if (isset($this->_arrPostData['btnCnfrm'])) {
+			// 入力値チェック
+			if (!$this->fncCheckData_Input()) {
+				$this->_arrErrMsg['message'] = E00006;
+				$this->_intMode = DEF_CNFRM;
+				return true;
+			}
 
-  <div class="number">
-    <h3>書店流通用ＦＡＸ送信</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_FAX}]" type="radio" value="{$smarty.const.DEF_FAX_B}"{if $arrInit[$smarty.const.DEF_EST_FAX] == $smarty.const.DEF_FAX_B} checked{/if}>５００書店</label>
-    <label><input name="input[{$smarty.const.DEF_EST_FAX}]" type="radio" value="{$smarty.const.DEF_FAX_C}"{if $arrInit[$smarty.const.DEF_EST_FAX] == $smarty.const.DEF_FAX_C} checked{/if}>１０００書店</label>
-    <label><input name="input[{$smarty.const.DEF_EST_FAX}]" type="radio" value="{$smarty.const.DEF_FAX_D}"{if $arrInit[$smarty.const.DEF_EST_FAX] == $smarty.const.DEF_FAX_D} checked{/if}>２０００書店</label>
-    <label><input name="input[{$smarty.const.DEF_EST_FAX}]" type="radio" value="{$smarty.const.DEF_FAX_E}"{if $arrInit[$smarty.const.DEF_EST_FAX] == $smarty.const.DEF_FAX_E} checked{/if}>３０００書店</label>
-    <label><input name="input[{$smarty.const.DEF_EST_FAX}]" type="radio" value="{$smarty.const.DEF_FAX_F}"{if $arrInit[$smarty.const.DEF_EST_FAX] == $smarty.const.DEF_FAX_F} checked{/if}>５０００書店</label>
-    <label><input name="input[{$smarty.const.DEF_EST_FAX}]" type="radio" value="{$smarty.const.DEF_FAX_A}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_FAX] == $smarty.const.DEF_FAX_A} checked{/if}>なし</label>
-  </div>
-{* ▲[2018-06-03] 追加 *}
+			// 見積り計算
+			$this->fncCalc();
 
-  <div>
-    <h3>販売形態</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_SALES}]" type="radio" value="{$smarty.const.DEF_FORM_A}"{if $arrInit[$smarty.const.DEF_EST_SALES] == $smarty.const.DEF_FORM_A} checked{/if}>
-    書店流通あり（書店へ委託販売）</label>　<br />
-    <label><input name="input[{$smarty.const.DEF_EST_SALES}]" type="radio" value="{$smarty.const.DEF_FORM_B}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_SALES] == $smarty.const.DEF_FORM_B} checked{/if}>
-    流通あり（アマゾンのみ販売）{* [2018-06-03] 削除<span class="red">（オススメ）</span>*}</label><br />
-    <label><input name="input[{$smarty.const.DEF_EST_SALES}]" type="radio" value="{$smarty.const.DEF_FORM_C}"{if $arrInit[$smarty.const.DEF_EST_SALES] == $smarty.const.DEF_FORM_C} checked{/if}>
-    書店流通なし</label>
-  </div>
+			// 入力チェック
+			if (!$this->fncCheckData_cnfrm()) {
+				$this->_arrErrMsg['message'] = E00007;
+				$this->_intMode = DEF_CNFRM;
+				return true;
+			}
 
-<div>
-    <h3>完成（印刷仕上がり）</h3>
-    {if isset($arrErrMsg.date)}<font color="red">{$arrErrMsg.date}</font><br>{/if}
-    希望日時　　
-  {html_select_date
-    prefix=""
-    field_array="date"
-    time=$arrInit.date
-    start_year=+0
-    end_year=+2
-    field_order="Y"
-    year_empty="--"
-    display_months=no display_days=no}年
-  {html_select_date
-    prefix=""
-    field_array="date"
-    time=$arrInit.date
-    field_order="M"
-    month_format="%m"
-    month_empty="--"
-    display_years=no display_days=no}月
-  {html_select_date
-    prefix=""
-    field_array="date"
-    time=$arrInit.date
-    field_order="D"
-    day_format="%02d"
-    day_value_format ="%02d"
-    day_empty="--"
-    display_years=no display_months=no}日<br>
-  <span>※４カ月以内の完成をご希望の場合は、特急料金が加算されます。</span></div>
-  <p align="center" class="input1"><input type="submit" name="btnInput" value="この内容で見積もりする。"></p>
-</form>
+			// 表示画面に最終確認をセット
+			$this->_intMode = DEF_CNFRM_LAST;
 
-</div>
-</div>
+		// 送信ボタン押下
+		} else if (isset($this->_arrPostData['btnOrder'])
+		           || isset($this->_arrPostData['btnInquiry']))
+		{
+			// 見積り計算
+			$this->fncCalc();
 
-{include file='Footer.tpl'}
+			// 入力値チェック(お客様情報)
+			if (!$this->fncCheckData_cnfrm()) {
+				$this->_arrErrMsg['message'] = E00007;
+				$this->_intMode = DEF_CNFRM;
+				return true;
+			}
+
+
+
+
+			// 処理完了時の画面モードをセット
+			if ($_order = isset($this->_arrPostData['btnOrder'])) {
+				$this->_intMode = DEF_CMPLT_ORDER;
+			} else {
+				$this->_intMode = DEF_CMPLT_INQUIRY;
+			}
+
+			// 管理者へメール送信
+			if (!$this->fncSendMail_admin($_order)) {
+				$this->_arrErrMsg['message'] = ($_order) ? E00008: E00009;
+				$this->_intMode = DEF_CNFRM;
+				return true;
+			}
+
+			// 利用者へメール送信
+			if (!$this->fncSendMail_user($_order)) {
+				$this->_arrErrMsg['message'] = ($_order) ? E00008: E00009;
+				$this->_intMode = DEF_CNFRM;
+				return true;
+			}
+
+		// 戻るボタン押下（確認→入力）
+		} else if (isset($this->_arrPostData['btnReturn'])) {
+			// 処理無し
+
+		// 戻るボタン押下（最終確認→確認）
+		} else if (isset($this->_arrPostData['btnReturnLast'])) {
+			// 見積り計算
+			$this->fncCalc();
+
+			$this->_intMode = DEF_CNFRM;
+
+		} else {
+			// 処理無し
+		}
+
+		// 例外処理の場合はフラグで判定させる
+		if (false) {
+			$this->_arrErrMsg['message'] = E00010;
+	        return false;
+		}
+
+	    return true;
+	}
+
+	/**
+	 * データ表示
+	 *
+	 * @access : public
+	 * @param  : none
+	 * @return : none
+	 */
+	function display()
+	{
+	    if ($this->_blnFncFlg){
+			switch ($this->_intMode) {
+				// 見積内容の確認&お客様情報の入力
+				case DEF_CNFRM:
+					$this->_objSmty->assign('arrInit', $this->fncMakeInitVal_cnfrm());
+					$this->_objSmty->assign('arrDispStr', $this->fncMakeDispStr());
+					$this->_objSmty->assign('arrErrMsg', $this->_arrErrMsg);
+					$this->_objSmty->assign('title', DEF_DISPNAME_CNFRM);
+					$this->_objSmty->assign('arrValue', $this->_arrValue);
+					$this->_objSmty->assign('intSum', $this->_intSumValue);
+					$this->_objSmty->display('Cnfrm-v3.tpl');
+					break;
+
+				// 最終確認
+				case DEF_CNFRM_LAST:
+    // CSVに保存（2024-12-06追記）
+    $this->saveToCSV();
+					$this->_objSmty->assign('arrErrMsg', $this->_arrErrMsg);
+					$this->_objSmty->assign('title', DEF_DISPNAME_CNFRM_LAST);
+					$this->_objSmty->display('CnfrmLast-v3.tpl');
+					break;
+
+				// 完了画面
+				case DEF_CMPLT_ORDER:
+					$this->_objSmty->assign('title', DEF_DISPNAME_CMPLT);
+					$this->_objSmty->assign('message', I00001);
+					$this->_objSmty->display('Cmplt.tpl');
+					break;
+
+				case DEF_CMPLT_INQUIRY:
+					$this->_objSmty->assign('title', DEF_DISPNAME_CMPLT);
+					$this->_objSmty->assign('message', I00002);
+					$this->_objSmty->display('Cmplt.tpl');
+					break;
+
+				// 入力画面
+				case DEF_INPUT:
+				default:
+					$this->_objSmty->assign('arrInit', $this->fncMakeInitVal_Input());
+					$this->_objSmty->assign('arrErrMsg', $this->_arrErrMsg);
+					$this->_objSmty->assign('title', DEF_DISPNAME_INPUT);
+					$this->_objSmty->display('Input-v3.tpl');
+					break;
+			}
+	    } else {
+			$this->_objSmty->assign('title', DEF_DISPNAME_ERROR);
+			$this->_objSmty->assign('message', $this->_arrErrMsg['message']);
+	        $this->_objSmty->display('Error.tpl');
+		}
+	}
+
+	/**
+	 * 見積り計算
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : none
+	 */
+	function fncCalc()
+	{
+		$_arrEstData = $this->setEstimate();
+
+		// サイズの分類
+		$_size = $this->fncDivideSize($this->_arrPostData['input'][DEF_EST_SIZE]);
+
+		// 部数の分類
+		$_circulate = $this->fncDivideCirculate($this->_arrPostData['input'][DEF_EST_CIRCULATE]);
+
+		$_page = $this->_arrPostData['input'][DEF_EST_PAGE];
+
+		// ①執筆 // 価格体系変更 20100716 ksol asada
+		$this->_arrValue[DEF_EST_WRITE]
+		 = $_arrEstData[DEF_EST_WRITE][$this->_arrPostData['input'][DEF_EST_WRITE]][$_size] * $_page;
+
+		// ④⑤⑥⑦書籍体裁・部数・ページ数・大きさ
+		$this->_arrValue[DEF_EST_BOOKS] = $_arrEstData[DEF_EST_BOOKS]
+		                                       [$_size]
+		                                       [$this->_arrPostData['input'][DEF_EST_COVER]]
+		                                       [$this->_arrPostData['input'][DEF_EST_CIRCULATE]]
+		                                       [$_page];
+// カラーページの倍率を設定
+switch ($this->_arrPostData['input'][DEF_EST_COLAR]) {
+    case DEF_COLAR_B:
+        $_colarMultiplier = 1.15;  // 8p の場合
+        break;
+    case DEF_COLAR_C:
+        $_colarMultiplier = 1.30;  // 16p の場合
+        break;
+    case DEF_COLAR_D:
+        $_colarMultiplier = 2.50;  // オールカラーの場合
+        break;
+    case DEF_COLAR_A:
+    default:
+        $_colarMultiplier = 1.00;  // カラーなしの場合
+        break;
+}
+
+// DEF_EST_BOOKSにカラーページの倍率を適用
+$this->_arrValue[DEF_EST_BOOKS] *= $_colarMultiplier;
+
+		// 取材日数
+		$this->_arrValue[DEF_EST_DAY] = $this->_arrPostData['input'][DEF_EST_DAY] * $_arrEstData[DEF_EST_DAY];
+
+		// ⑧販売形態(書店流通なしは無料)
+		if ($this->_arrPostData['input'][DEF_EST_SALES] != DEF_FORM_C) {
+			$this->_arrValue[DEF_EST_SALES]
+			 = $_arrEstData[DEF_EST_SALES][$this->_arrPostData['input'][DEF_EST_SALES]][$_circulate];
+		}
+
+		// ★DTP費用
+		$this->_arrValue[DEF_EST_DTP] = $_arrEstData[DEF_EST_DTP][$_size] * $_page;
+
+		// ★装丁
+		$this->_arrValue[DEF_EST_FM] = $_arrEstData[DEF_EST_FM];
+
+/**
+ * 4ヶ月以内の判定
+ *
+ * @param  array $dateData 完成希望日（Year, Month, Day）を含む配列
+ * @return boolean 4ヶ月以内の場合は true を返す
+ */
+function isWithinFourMonths($dateData)
+{
+    if (empty($dateData['Year']) || empty($dateData['Month']) || empty($dateData['Day'])) {
+        // 日付が正しくない場合は判定しない（false を返す）
+        return false;
+    }
+
+    // 完成希望日
+    $_year = $dateData['Year'];
+    $_month = $dateData['Month'];
+    $_day = $dateData['Day'];
+
+    // 現在の日付の4ヶ月後を取得
+    $currentPlusFourMonths = mktime(0, 0, 0, date("m")+4, date("d"), date("Y"));
+
+    // 希望日が現在の日付の4ヶ月以内かどうか判定
+    return mktime(0, 0, 0, $_month, $_day, $_year) < $currentPlusFourMonths;
+}
+
+    // 特急料金の判定と計算
+    if ($this->_arrPostData['input'][DEF_EST_WRITE] == DEF_WRITE_A || $this->_arrPostData['input'][DEF_EST_WRITE] == DEF_WRITE_B) {
+        if (isWithinFourMonths($this->_arrPostData['date'])) {
+            // 4ヶ月以内の場合、特急料金を加算
+            $this->_arrValue[DEF_EST_HASTE] = $_arrEstData[DEF_EST_HASTE] * $_page;
+        }
+    }
+
+
+
+        // ▼ [2018-06v2]追加分
+        // 図版イラスト
+        $this->_arrValue[DEF_EST_IMAGE] = $_arrEstData[DEF_EST_IMAGE][$this->_arrPostData['input'][DEF_EST_IMAGE]];
+        // 新聞広告
+        $this->_arrValue[DEF_EST_AD] = $_arrEstData[DEF_EST_AD][$this->_arrPostData['input'][DEF_EST_AD]];
+         // 書店営業ＦＡＸ
+        $this->_arrValue[DEF_EST_FAX] = $_arrEstData[DEF_EST_FAX][$this->_arrPostData['input'][DEF_EST_FAX]];
+        // ▲ [2018-06v2]追加分
+
+
+        // [2022-06v3]追加 管理費
+            $this->_arrValue[DEF_EST_TYPE] = $this->fncCalcManagingFee($this->_arrValue);
+
+		// 消費税(小数点以下切捨て)
+        $this->_arrValue[DEF_EST_TAX] = floor(array_sum($this->_arrValue) * 0.10);
+        $this->_objSmty->assign('tax', $this->_arrValue[DEF_EST_TAX]);
+
+        // [2018-06v2]追加 交通費（お住まいの地域）※交通費は消費税対象外
+        $this->_arrValue[DEF_EST_AREA] = $this->fncCalcTransport();
+
+		// 総額計算
+		$this->_intSumValue = array_sum($this->_arrValue);
+		$this->_objSmty->assign('intSum', $this->_intSumValue);
+
+
+
+	}
+	
+/**
+ * 見積もり結果をCSVファイルに保存（2024-12-06追記）
+ *
+ * @access : private
+ * @param  : none
+ * @return : none
+ */
+private function saveToCSV()
+{
+    $fileName = 'estimate_results.csv';
+    $filePath = '/home/publish/domains/publishing-house.jp/public_html/requestbox' . '/' . $fileName;
+
+    // 表示用文字列を取得
+    $arrDispStr = $this->fncMakeDispStr(); // 表示用文字列の配列を取得
+
+    // 各種表示用文字列を取得
+    $writingTypeDisplay = $arrDispStr['input'][DEF_EST_WRITE];       // 執筆
+    $bookStyleDisplay = $arrDispStr['input'][DEF_EST_COVER];         // 書籍体裁
+    $bookTypeDisplay = $arrDispStr['input'][DEF_EST_TYPE];           // 書籍の種類
+    $bindingDisplay = DEF_FM_DISP;                                   // 装幀
+    $sizeDisplay = $arrDispStr['input'][DEF_EST_SIZE];               // 本の大きさ
+    $researchDaysDisplay = $arrDispStr['input'][DEF_EST_DAY];        // 取材日数
+    $adDisplay = $arrDispStr['input'][DEF_EST_AD];                   // 新聞広告
+    $salesTypeDisplay = $arrDispStr['input'][DEF_EST_SALES];         // 流通形態
+    $colorPageDisplay = $arrDispStr['input'][DEF_EST_COLAR];         // カラーページ数
+
+
+    // CSVヘッダー
+    $headers = [
+        '執筆費', '印刷・製本費', '本文レイアウト費', '流通費', '図版イラスト費', 
+        '新聞広告費', '書店用FAX送信費', '装幀費', '取材日当', '管理費', '特急料金',
+        '消費税', '交通費', '合計', '執筆', '書籍体裁', '書籍の種類', 
+        '装幀', '部数', 'ページ数', 'カラーページ数', '本の大きさ', '取材日数', '新聞広告', '流通形態', 'お渡し希望日時',
+        'お名前', 'E-mail', '住所', '電話番号', 'ご要望'
+    ];
+
+    // データを配列に格納
+    $data = [
+        $this->_arrValue[DEF_EST_WRITE], // 執筆費
+        $this->_arrValue[DEF_EST_BOOKS], // 印刷・製本費
+        $this->_arrValue[DEF_EST_DTP],   // 本文レイアウト費
+        $this->_arrValue[DEF_EST_SALES], // 流通費
+        $this->_arrValue[DEF_EST_IMAGE], // 図版イラスト費
+        $this->_arrValue[DEF_EST_AD],    // 新聞広告費
+        $this->_arrValue[DEF_EST_FAX],   // 書店用FAX送信費
+        $this->_arrValue[DEF_EST_FM],    // 装幀費
+        $this->_arrValue[DEF_EST_DAY],   // 取材日当
+        $this->_arrValue[DEF_EST_TYPE],  // 管理費
+        $this->_arrValue[DEF_EST_HASTE],  // 特急料金
+        $this->_arrValue[DEF_EST_TAX],   // 消費税
+        $this->_arrValue[DEF_EST_AREA],  // 交通費
+        $this->_intSumValue,             // 合計
+        $writingTypeDisplay,             // 執筆
+        $bookStyleDisplay,               // 書籍体裁
+        $bookTypeDisplay,                // 書籍の種類
+        $bindingDisplay,                 // 装幀
+        $this->_arrPostData['input'][DEF_EST_CIRCULATE], // 部数
+        $this->_arrPostData['input'][DEF_EST_PAGE],      // ページ数
+        $colorPageDisplay,               // カラーページ数
+        $sizeDisplay,                    // 本の大きさ
+        $researchDaysDisplay,            // 取材日数
+		$adDisplay,                      // 新聞広告
+        $salesTypeDisplay,               // 流通形態
+        sprintf("%s年%s月%s日", $this->_arrPostData['date']['Year'], $this->_arrPostData['date']['Month'], $this->_arrPostData['date']['Day']), // お渡し希望日時
+        mb_convert_kana($this->_arrPostData['user']['name'], "KV", "UTF-8"),  // お名前
+        $this->_arrPostData['user']['email'],            // E-mail
+        mb_convert_kana($this->_arrPostData['user']['address'], "KV", "UTF-8"), // 住所
+        $this->_arrPostData['user']['tel'],              // 電話番号
+        mb_convert_kana($this->_arrPostData['user']['request'], "KV", "UTF-8")  // ご要望
+    ];
+
+    // ファイルを開く（追記モード）
+    $file = fopen($filePath, 'a');
+    if ($file) {
+        // ファイルが空の場合、ヘッダーを追加
+        if (filesize($filePath) === 0) {
+            fputcsv($file, $headers);
+        }
+		
+        // データをCSVに追記
+        fputcsv($file, $data);
+
+
+        fclose($file);
+    } else {
+        error_log('CSVファイルの書き込みに失敗しました。');
+    }
+}
+
+
+	/**
+	 * [2018-06v2]追加 交通費計算
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : integer : 交通費
+	 */
+	function fncCalcTransport()
+	{
+		// お住まいの地域別基本交通費
+        $base_price = array();
+        $base_price[DEF_AREA_A] = 78000;
+        $base_price[DEF_AREA_B] = 73000;
+        $base_price[DEF_AREA_C] = 41000;
+        $base_price[DEF_AREA_D] = 53000;
+        $base_price[DEF_AREA_E] = 41000;
+        $base_price[DEF_AREA_F] = 10000;
+        $base_price[DEF_AREA_G] = 46000;
+        $base_price[DEF_AREA_H] = 60000;
+        $base_price[DEF_AREA_I] = 65000;
+        $base_price[DEF_AREA_J] = 0;
+
+		// 取材日数による加算
+		switch ($this->_arrPostData['input'][DEF_EST_DAY]) {
+			case 1:
+			case 2:
+				$multiply = 1;
+				break;
+			case 3:
+			case 4:
+				$multiply = 2;
+				break;
+			case 5:
+			case 6:
+				$multiply = 3;
+				break;
+			case 7:
+				$multiply = 4;
+				break;
+			default:
+				$multiply = 0;
+				break;
+		}
+
+		return $base_price[$this->_arrPostData['input'][DEF_EST_AREA]] * $multiply;
+	}
+
+/**
+ * 管理費計算
+ *
+ * @access : private
+ * @param  : array $_arrValue 各費用の配列
+ * @return : integer 管理費
+ */
+function fncCalcManagingFee($_arrValue)
+{
+    $fee = 0;
+    // 管理費と消費税を除く、それまでの合計金額を算出
+    $subtotal = array_sum($_arrValue);
+
+    // 書籍の種類に応じて管理費を計算
+    switch ($this->_arrPostData['input'][DEF_EST_TYPE]) {
+        // 「医学書・ビジネス書・実用書」の場合：管理費2倍（合計の20%）
+        case DEF_TYPE_MEDICAL:
+            $fee = floor($subtotal * 0.20);
+            break;
+
+        // 「自伝・小説・その他」の場合：管理費1倍（合計の10%）
+        case DEF_TYPE_OTHERS:
+            $fee = floor($subtotal * 0.10);
+            break;
+    }
+
+    return intval($fee);
+}
+
+	/**
+	 * 入力値チェック(入力画面)
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : boolean : true  エラー無し
+	 *                   : false エラーあり
+	 */
+	function fncCheckData_Input()
+	{
+		$_bleRtn = true;
+
+		// 希望日
+		$_year = $this->_arrPostData['date']['Year'];
+		$_month = $this->_arrPostData['date']['Month'];
+		$_day = $this->_arrPostData['date']['Day'];
+		if (empty($_year) && empty($_month) && empty($_day)) {
+			// 未入力は不問
+		} else if (empty($_year) || empty($_month) || empty($_day)) {
+			$this->_arrErrMsg['date'] = E00004;
+			$_bleRtn = false;
+		} else if (!checkdate($_month, $_day, $_year)) {
+			$this->_arrErrMsg['date'] = E00004;
+			$_bleRtn = false;
+		} else if (mktime(0, 0, 0,$_month ,$_day ,$_year)
+		           < mktime(0, 0, 0, date("m")+1, date("d"), date("Y")))
+		{
+			// 現在から1ヶ月以内の日付が入力された
+			$this->_arrErrMsg['date'] = E00005;
+			$_bleRtn = false;
+		}
+
+		return $_bleRtn;
+	}
+
+	/**
+	 * 入力値チェック(確認画面)
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : boolean : true  エラー無し
+	 *                   : false エラーあり
+	 */
+	function fncCheckData_cnfrm()
+	{
+		$_bleRtn = true;
+
+		// お名前
+		$_val = $this->_arrPostData['user']['name'];
+		if (empty($_val)) {
+			$this->_arrErrMsg['user']['name'] = E00011;
+			$_bleRtn = false;
+		}
+
+		// E-mail
+		$_val = $this->_arrPostData['user']['email'];
+		if (empty($_val)) {
+			$this->_arrErrMsg['user']['email'] = E00011;
+			$_bleRtn = false;
+		} else if (!$this->MailCheck($_val)) {
+			$this->_arrErrMsg['user']['email'] = E00013;
+			$_bleRtn = false;
+		}
+
+		// 住所
+		$_val = $this->_arrPostData['user']['address'];
+		if (empty($_val)) {
+			$this->_arrErrMsg['user']['address'] = E00011;
+			$_bleRtn = false;
+		}
+
+		// 電話番号
+		$_val = $this->_arrPostData['user']['tel'];
+		// ライティングからの連絡で電話が選択された場合のみ必須
+		if (empty($_val)) {
+			$this->_arrErrMsg['user']['tel'] = E00011;
+			$_bleRtn = false;
+		} else if (!preg_match("/^\d*$/", $_val)) {
+			$this->_arrErrMsg['user']['tel'] = E00002;
+			$_bleRtn = false;
+		}
+
+		return $_bleRtn;
+	}
+
+	/**
+	 * メールアドレスの妥当性のチェック
+	 * @param $strVar 文字列
+	 * @access	public
+	 * @return	boolean true/false
+	 */
+	function MailCheck($mailadr)
+	{
+		// 入力されていない場合は
+		if ($mailadr == "")
+			return true;
+
+		// メールアドレスの全角→半角変換
+		$mailadr = mb_convert_kana($mailadr,"arn");
+
+		if (!eregi("^[^@ ]+@([a-zA-Z0-9\-]+\.)+([a-zA-Z0-9\-\.]*"
+				 . "(aero|arpa|asia|biz|cat|com|coop|edu|gov|info"
+				 . "|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel"
+				 . "|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az"
+				 . "|ba|bb|bd|be|bf|bg|bh|bi|bj|bl|bm|bn|bo|br|bs|bt|bv|bw"
+				 . "|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cs|cu|cv|cx"
+				 . "|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk"
+				 . "|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt"
+				 . "|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it"
+				 . "|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li"
+				 . "|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mf|mg|mh|mk|ml|mm|mn|mo"
+				 . "|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no"
+				 . "|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py"
+				 . "|qa|re|ro|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so"
+				 . "|sr|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr"
+				 . "|tt|tv|tw|tz|ua|ug|uk|um|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf"
+				 . "|ws|ye|yt|yu|za|zm|zr|zw))\$", $mailadr)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 部数の分類
+	 *
+	 * @access : private
+	 * @param  : integer $pCirculate:部数
+	 * @return : 分類された部数
+	 */
+	function fncDivideCirculate($pCirculate)
+	{
+		switch ($pCirculate) {
+			case DEF_CIRCULATE_J:
+			case DEF_CIRCULATE_K:
+			case DEF_CIRCULATE_H:
+			case DEF_CIRCULATE_I:
+			case DEF_CIRCULATE_A:
+			case DEF_CIRCULATE_B: // 200部以下
+				return DEF_CIRCULATE_B;
+
+			case DEF_CIRCULATE_C: // 300部
+				return DEF_CIRCULATE_C;
+
+			case DEF_CIRCULATE_L: // 400部
+				return DEF_CIRCULATE_L;
+
+			case DEF_CIRCULATE_D: // 500部
+				return DEF_CIRCULATE_D;
+
+			case DEF_CIRCULATE_E: // 1000部
+				return DEF_CIRCULATE_E;
+
+			case DEF_CIRCULATE_F: // 2000部
+				return DEF_CIRCULATE_F;
+
+			case DEF_CIRCULATE_G: // 3000部
+				return DEF_CIRCULATE_G;
+		}
+	}
+
+	/**
+	 * サイズの分類
+	 *
+	 * @access : private
+	 * @param  : integer $pSize:サイズ
+	 * @return : integer 分類されたサイズ
+	 */
+	function fncDivideSize($pSize)
+	{
+		switch ($pSize) {
+			case DEF_SIZE_S_A:
+			case DEF_SIZE_S_B:
+				return DEF_SIZE_A;
+			case DEF_SIZE_S_C:
+				return DEF_SIZE_C;
+
+			case DEF_SIZE_S_D:
+			case DEF_SIZE_S_E:
+				return DEF_SIZE_B;
+		}
+	}
+
+	/**
+	 * 初期値の設定(入力画面)
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : none
+	 */
+	function fncMakeInitVal_Input()
+	{
+		$_arrInit = array();
+
+		// ①執筆-取材、取材、執筆を依頼する
+		if (isset($this->_arrPostData['input'][DEF_EST_WRITE])) {
+			$_arrInit[DEF_EST_WRITE]
+				= $this->_arrPostData['input'][DEF_EST_WRITE];
+		} else {
+			$_arrInit[DEF_EST_WRITE]
+				= DEF_WRITE_A;
+		}
+
+		// ②原稿の状況-テキストデータ（ワードや一太郎）
+		if (isset($this->_arrPostData['input'][DEF_EST_NOTES])) {
+			$_arrInit[DEF_EST_NOTES]
+				= $this->_arrPostData['input'][DEF_EST_NOTES];
+		} else {
+			$_arrInit[DEF_EST_NOTES]
+				= DEF_STATE_A;
+		}
+
+		// ③校正-あり
+		if (isset($this->_arrPostData['input'][DEF_EST_EMEND])) {
+			$_arrInit[DEF_EST_EMEND]
+				= $this->_arrPostData['input'][DEF_EST_EMEND];
+		} else {
+			$_arrInit[DEF_EST_EMEND]
+				= DEF_MISPRINT_A;
+		}
+
+		// ④書籍体裁-並製　ソフトカバー
+		if (isset($this->_arrPostData['input'][DEF_EST_COVER])) {
+			$_arrInit[DEF_EST_COVER]
+				= $this->_arrPostData['input'][DEF_EST_COVER];
+		} else {
+			$_arrInit[DEF_EST_COVER]
+				= DEF_BOOK_SOFT;
+		}
+
+		// ⑤部数-100部
+		if (isset($this->_arrPostData['input'][DEF_EST_CIRCULATE])) {
+			$_arrInit[DEF_EST_CIRCULATE]
+				= $this->_arrPostData['input'][DEF_EST_CIRCULATE];
+		} else {
+			$_arrInit[DEF_EST_CIRCULATE]
+				= DEF_CIRCULATE_C; // [2018-06v2] DEF_CIRCULATE_H;
+		}
+
+		// ⑥ページ数-112ｐ
+		if (isset($this->_arrPostData['input'][DEF_EST_PAGE])) {
+			$_arrInit[DEF_EST_PAGE]
+				= $this->_arrPostData['input'][DEF_EST_PAGE];
+		} else {
+			$_arrInit[DEF_EST_PAGE]
+				= DEF_PAGE_C; // [2018-06v2] DEF_PAGE_K;
+		}
+
+    // カラーページ選択の初期値
+    if (isset($this->_arrPostData['input'][DEF_EST_COLAR])) {
+        $_arrInit[DEF_EST_COLAR] = $this->_arrPostData['input'][DEF_EST_COLAR];
+    } else {
+        $_arrInit[DEF_EST_COLAR] = DEF_COLAR_A; // デフォルトはなし
+    }
+
+		// ⑦大きさ-四六判
+		if (isset($this->_arrPostData['input'][DEF_EST_SIZE])) {
+			$_arrInit[DEF_EST_SIZE]
+				= $this->_arrPostData['input'][DEF_EST_SIZE];
+		} else {
+			$_arrInit[DEF_EST_SIZE]
+				= DEF_SIZE_S_A;
+		}
+
+		// 図版イラスト ※[2018-06v2] 新規追加
+		if (isset($this->_arrPostData['input'][DEF_EST_IMAGE])) {
+			$_arrInit[DEF_EST_IMAGE] = $this->_arrPostData['input'][DEF_EST_IMAGE];
+		} else {
+			$_arrInit[DEF_EST_IMAGE] = DEF_IMAGE_B;
+		}
+
+		// お住まいの地域 ※[2018-06v2] 新規追加
+		if (isset($this->_arrPostData['input'][DEF_EST_AREA])) {
+			$_arrInit[DEF_EST_AREA] = $this->_arrPostData['input'][DEF_EST_AREA];
+		} else {
+			$_arrInit[DEF_EST_AREA] = DEF_AREA_F;
+		}
+
+		// 取材日数
+		if (isset($this->_arrPostData['input'][DEF_EST_DAY])) {
+			$_arrInit[DEF_EST_DAY]
+				= $this->_arrPostData['input'][DEF_EST_DAY];
+		} else {
+			$_arrInit[DEF_EST_DAY]
+				= DEF_DAY_B; // [2018-06v2] DEF_DAY_A;
+		}
+
+		// 新聞広告 ※[2018-06v2] 新規追加
+		if (isset($this->_arrPostData['input'][DEF_EST_AD])) {
+			$_arrInit[DEF_EST_AD]
+				= $this->_arrPostData['input'][DEF_EST_AD];
+		} else {
+			$_arrInit[DEF_EST_AD] = DEF_AD_F;
+		}
+
+		// 書店営業ＦＡＸ ※[2018-06v2] 新規追加
+		if (isset($this->_arrPostData['input'][DEF_EST_FAX])) {
+			$_arrInit[DEF_EST_FAX]
+				= $this->_arrPostData['input'][DEF_EST_FAX];
+		} else {
+			$_arrInit[DEF_EST_FAX] = DEF_FAX_B;
+		}
+
+		// ⑧販売形態-書店流通あり
+		if (isset($this->_arrPostData['input'][DEF_EST_SALES])) {
+			$_arrInit[DEF_EST_SALES]
+				= $this->_arrPostData['input'][DEF_EST_SALES];
+		} else {
+			$_arrInit[DEF_EST_SALES]
+				= DEF_FORM_B; // [2018-06v2] DEF_FORM_A;
+		}
+
+		// 完成希望日時
+		if (isset($this->_arrPostData['date']['Year'])) {
+			$_arrInit['date'] = sprintf("%s-%s-%s", $this->_arrPostData['date']['Year']
+			                                      , $this->_arrPostData['date']['Month']
+			                                      , $this->_arrPostData['date']['Day']);
+		} else {
+			// [2018-06v2] デフォルトを４か月後とする
+		//	$_arrInit['date'] = '--';
+			$_arrInit['date'] = date('Y-m-d', strtotime('+4 month'));
+		}
+
+		return $_arrInit;
+	}
+
+	/**
+	 * 見積り入力の表示文字列の作成
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : none
+	 */
+	function fncMakeDispStr()
+
+	{
+		$_arrDispStr = array();
+
+		// 執筆
+		switch ($this->_arrPostData['input'][DEF_EST_WRITE]) {
+			case DEF_WRITE_A:
+				$_arrDispStr['input'][DEF_EST_WRITE] = DEF_WRITE_A_DISP;
+				break;
+			case DEF_WRITE_B:
+				$_arrDispStr['input'][DEF_EST_WRITE] = DEF_WRITE_B_DISP;
+				break;
+			case DEF_WRITE_C:
+				$_arrDispStr['input'][DEF_EST_WRITE] = DEF_WRITE_C_DISP;
+				break;
+		}
+
+		// 手書き原稿データ変換
+		switch ($this->_arrPostData['input'][DEF_EST_NOTES]) {
+			case DEF_STATE_A:
+				$_arrDispStr['input'][DEF_EST_NOTES] = DEF_STATE_A_DISP;
+				break;
+			case DEF_STATE_B:
+				$_arrDispStr['input'][DEF_EST_NOTES] = DEF_STATE_B_DISP;
+				break;
+		}
+
+		// 校正
+		switch ($this->_arrPostData['input'][DEF_EST_EMEND]) {
+			case DEF_MISPRINT_A:
+				$_arrDispStr['input'][DEF_EST_EMEND] = DEF_MISPRINT_A_DISP;
+				break;
+			case DEF_MISPRINT_B:
+				$_arrDispStr['input'][DEF_EST_EMEND] = DEF_MISPRINT_B_DISP;
+				break;
+		}
+
+		// 書籍体裁
+		switch ($this->_arrPostData['input'][DEF_EST_COVER]) {
+			case DEF_BOOK_SOFT:
+				$_arrDispStr['input'][DEF_EST_COVER] = DEF_BOOK_SOFT_DISP;
+				break;
+			case DEF_BOOK_HARD:
+				$_arrDispStr['input'][DEF_EST_COVER] = DEF_BOOK_HARD_DISP;
+				break;
+		}
+
+		// 書籍の種類 [2022-06v3]追加
+		switch ($this->_arrPostData['input'][DEF_EST_TYPE]) {
+			case DEF_TYPE_MEDICAL:
+				$_arrDispStr['input'][DEF_EST_TYPE] = DEF_TYPE_MEDICAL_DISP;
+				break;
+			case DEF_TYPE_OTHERS:
+				$_arrDispStr['input'][DEF_EST_TYPE] = DEF_TYPE_OTHERS_DISP;
+				break;
+		}
+
+		// 装幀
+		$_arrDispStr['input'][DEF_EST_FM] = DEF_FM_DISP;
+
+		// 本の大きさ
+		switch ($this->_arrPostData['input'][DEF_EST_SIZE]) {
+			case DEF_SIZE_S_A:
+				$_arrDispStr['input'][DEF_EST_SIZE] = DEF_SIZE_S_A_DISP;
+				break;
+			case DEF_SIZE_S_B:
+				$_arrDispStr['input'][DEF_EST_SIZE] = DEF_SIZE_S_B_DISP;
+				break;
+			case DEF_SIZE_S_C:
+				$_arrDispStr['input'][DEF_EST_SIZE] = DEF_SIZE_S_C_DISP;
+				break;
+			case DEF_SIZE_S_D:
+				$_arrDispStr['input'][DEF_EST_SIZE] = DEF_SIZE_S_D_DISP;
+				break;
+			case DEF_SIZE_S_E:
+				$_arrDispStr['input'][DEF_EST_SIZE] = DEF_SIZE_S_E_DISP;
+				break;
+		}
+
+		// ページ数
+		$_arrDispStr['input'][DEF_EST_PAGE]
+		 = $this->_arrPostData['input'][DEF_EST_PAGE].'p';
+
+    // カラーページ
+    switch ($this->_arrPostData['input'][DEF_EST_COLAR]) {
+        case DEF_COLAR_B:
+            $_arrDispStr['input'][DEF_EST_COLAR] = DEF_COLAR_B_DISP;
+            break;
+        case DEF_COLAR_C:
+            $_arrDispStr['input'][DEF_EST_COLAR] = DEF_COLAR_C_DISP;
+            break;
+        case DEF_COLAR_D:
+            $_arrDispStr['input'][DEF_EST_COLAR] = DEF_COLAR_D_DISP;
+            break;
+        case DEF_COLAR_A:
+        default:
+            $_arrDispStr['input'][DEF_EST_COLAR] = DEF_COLAR_A_DISP;
+            break;
+    }
+
+		// 部数
+		$_arrDispStr['input'][DEF_EST_CIRCULATE]
+		 = number_format($this->_arrPostData['input'][DEF_EST_CIRCULATE]).'部';
+
+		// 取材日数
+		$_arrDispStr['input'][DEF_EST_DAY]
+			= ($this->_arrPostData['input'][DEF_EST_DAY] == DEF_DAY_A) ? 'なし' : number_format($this->_arrPostData['input'][DEF_EST_DAY]) . '日';
+
+		// 新聞広告
+		switch ($this->_arrPostData['input'][DEF_EST_AD]) {
+			case DEF_AD_B:
+				$_arrDispStr['input'][DEF_EST_AD] = DEF_AD_B_DISP;
+				break;
+			case DEF_AD_C:
+				$_arrDispStr['input'][DEF_EST_AD] = DEF_AD_C_DISP;
+				break;
+			case DEF_AD_D:
+				$_arrDispStr['input'][DEF_EST_AD] = DEF_AD_D_DISP;
+				break;
+			case DEF_AD_E:
+				$_arrDispStr['input'][DEF_EST_AD] = DEF_AD_E_DISP;
+				break;
+			case DEF_AD_F:
+				$_arrDispStr['input'][DEF_EST_AD] = DEF_AD_F_DISP;
+				break;
+			case DEF_AD_A:
+				$_arrDispStr['input'][DEF_EST_AD] = DEF_AD_A_DISP;
+				break;
+		}
+
+		// 書店流通用FAX
+		switch ($this->_arrPostData['input'][DEF_EST_FAX]) {
+			case DEF_FAX_B:
+				$_arrDispStr['input'][DEF_EST_FAX] = DEF_FAX_B_DISP;
+				break;
+			case DEF_FAX_C:
+				$_arrDispStr['input'][DEF_EST_FAX] = DEF_FAX_C_DISP;
+				break;
+			case DEF_FAX_D:
+				$_arrDispStr['input'][DEF_EST_FAX] = DEF_FAX_D_DISP;
+				break;
+			case DEF_FAX_E:
+				$_arrDispStr['input'][DEF_EST_FAX] = DEF_FAX_E_DISP;
+				break;
+			case DEF_FAX_F:
+				$_arrDispStr['input'][DEF_EST_FAX] = DEF_FAX_F_DISP;
+				break;
+			case DEF_FAX_A:
+				$_arrDispStr['input'][DEF_EST_FAX] = DEF_FAX_A_DISP;
+				break;
+		}		
+
+// お住まいの地域
+		switch ($this->_arrPostData['input'][DEF_EST_AREA]) {
+			case DEF_AREA_A:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_A_DISP;
+				break;
+			case DEF_AREA_B:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_B_DISP;
+				break;
+			case DEF_AREA_C:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_C_DISP;
+				break;
+			case DEF_AREA_D:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_D_DISP;
+				break;
+			case DEF_AREA_E:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_E_DISP;
+				break;
+			case DEF_AREA_F:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_F_DISP;
+				break;
+			case DEF_AREA_G:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_G_DISP;
+				break;
+			case DEF_AREA_H:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_H_DISP;
+				break;
+			case DEF_AREA_I:
+				$_arrDispStr['input'][DEF_EST_AREA] = DEF_AREA_I_DISP;
+				break;
+		}
+
+		// 販売形態
+		switch ($this->_arrPostData['input'][DEF_EST_SALES]) {
+			case DEF_FORM_A:
+				$_arrDispStr['input'][DEF_EST_SALES] = DEF_FORM_A_DISP;
+				break;
+			case DEF_FORM_B:
+				$_arrDispStr['input'][DEF_EST_SALES] = DEF_FORM_B_DISP;
+				break;
+			case DEF_FORM_C:
+				$_arrDispStr['input'][DEF_EST_SALES] = DEF_FORM_C_DISP;
+				break;
+		}
+
+		// お渡し希望日時
+		if (empty($this->_arrPostData['date']['Year'])) {
+			$_arrDispStr['date'] = '指定無し';
+		} else {
+			$_arrDispStr['date'] = sprintf("%s年%s月%s日", $this->_arrPostData['date']['Year']
+			                                             , $this->_arrPostData['date']['Month']
+			                                             , $this->_arrPostData['date']['Day']);
+		}
+		return $_arrDispStr;
+	}
+	
+	/**
+	 * 初期値の設定(確認画面)
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : none
+	 */
+	function fncMakeInitVal_cnfrm()
+	{
+		$_arrInit = array();
+
+		// ライティングからの連絡
+		if (isset($this->_arrPostData['user']['contact'])) {
+			$_arrInit['user']['contact'] = $this->_arrPostData['user']['contact'];
+		} else {
+			$_arrInit['user']['contact'] = DEF_CONTACT_MAIL;
+		}
+
+		return $_arrInit;
+	}
+
+	/**
+	 * 管理者へメール送信
+	 *
+	 * @access : private
+	 * @param  : $pOrder : 注文メールフラグ
+	 * @return : boolean : true  メール送信成功
+	 *                     false メール送信失敗
+	 */
+	function fncSendMail_admin($pOrder = true)
+	{
+		$_from  = MAIL_INFO;
+		$_to    = MAIL_ADMIN;
+
+		// 動作確認用
+		if ($_SERVER['REMOTE_ADDR'] == '219.120.16.186') {
+			$_to = 'akirangt314@gmail.com';
+		}
+
+		if ($pOrder) {
+			$_subject = '自費出版 ご注文メール';
+		} else {
+			$_subject = '自費出版 お問い合わせメール';
+		}
+		$_bodyTmp = <<< END_OF_VAR
+%s 自動送信
+
+ お客様情報
+%s
+
+ 内訳
+%s
+
+ 本の仕様予定
+%s
+END_OF_VAR;
+
+		$_body = sprintf($_bodyTmp, ($pOrder) ? 'ご注文メール': 'お問い合わせメール'
+		                          , $this->fncMakeMailFormat_userInfo()
+		                          , $this->fncMakeMailFormat_detail()
+		                          , $this->fncMakeMailFormat_method());
+
+		return $this->setSendMail($_from, $_to, $_subject, $_body);
+	}
+
+	/**
+	 * 利用者へメール送信
+	 *
+	 * @access : private
+	 * @param  : $pOrder : 注文メールフラグ
+	 * @return : boolean : true  メール送信成功
+	 *                     false メール送信失敗
+	 */
+	function fncSendMail_user($pOrder = true)
+	{
+		$_from = MAIL_INFO;
+		$_to = $this->_arrPostData['user']['email'];
+		if ($pOrder) {
+			$_subject = 'ライティングの自費出版 ご注文メール';
+		} else {
+			$_subject = 'ライティングの自費出版 お問い合わせメール';
+		}
+		$_bodyTmp = <<< END_OF_VAR
+%s 様
+　弊社サイトにて自動見積をご利用いただき、誠にありがとうございました。
+　以下の内容で%sを受け付けました。
+
+ お客様情報
+%s
+
+ 内訳
+%s
+
+ 本の仕様予定
+%s
+
+　翌日までにライティング（株） 担当者より、受付確認の%sをさせていた
+だきます。なお、土曜日に本データを送信された場合は、月曜日のご連絡となります。
+　よろしくお願い申し上げます。
+
+--
+ライティング 株式会社
+代表取締役   高木伸浩
+〒 603-8313  京都市北区紫野下柏野町 22-29
+電話 ０７５－４６７－８５００
+FAX  ０７５－４６７－８５０２
+https://www.righting.co.jp/
+END_OF_VAR;
+
+		$_body = sprintf($_bodyTmp, mb_convert_kana($this->_arrPostData['user']['name'], "KV", "UTF-8")
+		                          , ($pOrder) ? '注文' : 'お問い合わせ'
+		                          , $this->fncMakeMailFormat_userInfo()
+		                          , $this->fncMakeMailFormat_detail()
+		                          , $this->fncMakeMailFormat_method()
+		                          , ($this->_arrPostData['user']['contact'] == DEF_CONTACT_MAIL) ? 'メール' :'お電話');
+
+		return $this->setSendMail($_from, $_to, $_subject, $_body);
+	}
+
+	/**
+	 * メールテンプレート作成 お客様情報
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : string
+	 */
+	function fncMakeMailFormat_userInfo()
+	{
+		$_bodyTmp  = <<< END_OF_VAR
+  お名前                 ：%s
+  E-mail                 ：%s
+  住所                   ：%s
+  電話番号               ：%s
+  ご要望                 ：
+%s
+  ライティングからの連絡 ：%s
+END_OF_VAR;
+
+		$_body = sprintf($_bodyTmp, mb_convert_kana($this->_arrPostData['user']['name'], "KV", "UTF-8")
+		                          , $this->_arrPostData['user']['email']
+		                          , mb_convert_kana($this->_arrPostData['user']['address'], "KV", "UTF-8")
+		                          , $this->_arrPostData['user']['tel']
+		                          , mb_convert_kana($this->_arrPostData['user']['request'], "KV", "UTF-8")
+		                          , ($this->_arrPostData['user']['contact'] == DEF_CONTACT_MAIL) ? 'メール' :'お電話');
+
+		return $_body;
+	}
+
+	/**
+	 * メールテンプレート作成 内訳
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : string
+	 */
+	function fncMakeMailFormat_detail()
+	{
+		$_bodyTmp  = <<< END_OF_VAR
+  執筆費                 ：\\%11s
+%s  印刷・製本費           ：\\%11s
+  本文レイアウト費       ：\\%11s
+  流通費                 ：\\%11s
+  図版イラスト費         ：\\%11s
+  新聞広告費             ：\\%11s
+  書店用ＦＡＸ送信費     ：\\%11s
+  装幀費                 ：\\%11s
+  取材日当               ：\\%11s
+  進行管理費             ：\\%11s
+  消費税                 ：\\%11s
+  交通費                 ：\\%11s
+ ---------------------------------------
+  合計                   ：\\%11s（税込・送料別）
+END_OF_VAR;
+
+$_body = sprintf($_bodyTmp, 
+    number_format($this->_arrValue[DEF_EST_WRITE]), // 執筆費
+    ($this->_arrValue[DEF_EST_HASTE] > 0) ? sprintf("  特急料金               ：\\%11s\r\n", number_format($this->_arrValue[DEF_EST_HASTE])) : '', // 特急料金がある場合のみ表示
+    number_format($this->_arrValue[DEF_EST_BOOKS]), // 印刷・製本費
+    number_format($this->_arrValue[DEF_EST_DTP]),   // 本文レイアウト費
+    number_format($this->_arrValue[DEF_EST_SALES]), // 流通費
+    number_format($this->_arrValue[DEF_EST_IMAGE]), // 図版イラスト費
+    number_format($this->_arrValue[DEF_EST_AD]),    // 新聞広告費
+    number_format($this->_arrValue[DEF_EST_FAX]),   // 書店用FAX送信費
+    number_format($this->_arrValue[DEF_EST_FM]),    // 装幀費
+    number_format($this->_arrValue[DEF_EST_DAY]),   // 取材日当
+    number_format($this->_arrValue[DEF_EST_TYPE]),  // 管理費
+    number_format($this->_arrValue[DEF_EST_TAX]),   // 消費税
+    number_format($this->_arrValue[DEF_EST_AREA]),  // 交通費
+    number_format($this->_intSumValue)              // 合計金額
+);
+		return $_body;
+	}
+
+	/**
+	 * メールテンプレート作成 本の仕様予定
+	 *
+	 * @access : private
+	 * @param  : none
+	 * @return : string
+	 */
+	function fncMakeMailFormat_method()
+	{
+		$_bodyTmp  = <<< END_OF_VAR
+  執筆                   ：%s
+  書籍体裁               ：%s
+  書籍の種類             ：%s
+  装幀(必ず付属されます) ：%s
+  部数                   ：%s
+  ページ数               ：%s
+  本の大きさ             ：%s
+  お住まいの地域         ：%s
+  取材日数               ：%s
+  流通形態               ：%s
+  お渡し希望日時         ：%s
+END_OF_VAR;
+
+		// 見積り入力の表示文字列の取得
+		$_arrDispStr = $this->fncMakeDispStr();
+
+		$_body = sprintf($_bodyTmp, $_arrDispStr['input'][DEF_EST_WRITE]
+		                          , $_arrDispStr['input'][DEF_EST_COVER]
+		                          , $_arrDispStr['input'][DEF_EST_TYPE]
+		                          , $_arrDispStr['input'][DEF_EST_FM]
+		                          , $_arrDispStr['input'][DEF_EST_CIRCULATE]
+		                          , $_arrDispStr['input'][DEF_EST_PAGE]
+		                          , $_arrDispStr['input'][DEF_EST_SIZE]
+		                          , $_arrDispStr['input'][DEF_EST_AREA]
+		                          , $_arrDispStr['input'][DEF_EST_DAY]
+								  , $_arrDispStr['input'][DEF_EST_SALES]
+		                          , $_arrDispStr['date']);
+		return $_body;
+	}
+
+	/**
+	 * メール送信
+	 * @param	string $strFrom		送信元
+	 * 			string $strTo		送信先
+	 * 			string $strSubject	メールタイトル
+	 * 			string $strBody		メール本文
+	 * @access	private
+	 * @return	boolean true ：正常終了
+	 * 			boolean false：異常終了
+	 */
+	function setSendMail($strFrom, $strTo, $strSubject, $strBody)
+	{
+		$strOption = "From: %s\r\nReply-to: %s";
+
+		$strOption = sprintf($strOption, MAIL_INFO
+									   , MAIL_INFO);
+		$strRtnTo  = "-f".MAIL_INFO;
+
+		mb_language('Japanese');
+		mb_internal_encoding("UTF-8");
+
+		return mb_send_mail($strTo, $strSubject, $strBody, $strOption, $strRtnTo);
+	}
+
+	/**
+	 * 見積もりデータ設定
+	 *
+	 * @access : protected
+	 * @param  : none
+	 * @return : array 見積もり金額
+	 */
+	function setEstimate()
+	{
+       // 執筆費用 // 取材, リライトの価格を別に設定
+        $_arr[DEF_EST_WRITE] = array(
+              DEF_WRITE_A => array(DEF_SIZE_A => 4500
+                                 , DEF_SIZE_B => 9000
+                                 , DEF_SIZE_C => 4500
+            )
+            , DEF_WRITE_B => array(DEF_SIZE_A => 3150
+                                 , DEF_SIZE_B => 6300
+                                 , DEF_SIZE_C => 3150
+            )
+            , DEF_WRITE_C => array(DEF_SIZE_A => 0
+                                 , DEF_SIZE_B => 0
+                                 , DEF_SIZE_C => 0
+            )
+        );
+
+        // 手書き原稿費用
+        $_arr[DEF_EST_NOTES][DEF_SIZE_A] = 300;
+        $_arr[DEF_EST_NOTES][DEF_SIZE_B] = 500;
+        $_arr[DEF_EST_NOTES][DEF_SIZE_C] = 300;
+
+        // 校正費
+        $_arr[DEF_EST_EMEND][DEF_SIZE_A] = 360;
+        $_arr[DEF_EST_EMEND][DEF_SIZE_B] = 550;
+        $_arr[DEF_EST_EMEND][DEF_SIZE_C] = 360;
+
+		// ★★★ CSVから印刷製本費を読み込む処理 ★★★
+		$_arr[DEF_EST_BOOKS] = array();
+		$csvFilePath = dirname(__FILE__) . '/data/book_pricing.csv';
+		if (file_exists($csvFilePath) && ($handle = fopen($csvFilePath, 'r')) !== FALSE) {
+			fgetcsv($handle, 1000, ','); // ヘッダー行を読み飛ばす
+			while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+				if (count($data) == 5) {
+					$size  = (int)$data[0];
+					$cover = (int)$data[1];
+					$circ  = (int)$data[2];
+					$page  = (int)$data[3];
+					$price = (int)$data[4];
+					$_arr[DEF_EST_BOOKS][$size][$cover][$circ][$page] = $price;
+				}
+			}
+			fclose($handle);
+		}		
+
+        // 取材日数（1日*20000）
+        $_arr[DEF_EST_DAY] = 20000;
+
+        // 販売形態
+        $_arr[DEF_EST_SALES]
+            = array(DEF_FORM_A => array(DEF_CIRCULATE_H => 0
+									  , DEF_CIRCULATE_J => 0
+									  , DEF_CIRCULATE_K => 0
+									  , DEF_CIRCULATE_I => 0
+									  , DEF_CIRCULATE_A => 0
+									  , DEF_CIRCULATE_B => 150000
+                                      , DEF_CIRCULATE_C => 150000
+									  , DEF_CIRCULATE_D => 250000
+									  , DEF_CIRCULATE_E => 400000
+                                      , DEF_CIRCULATE_F => 550000
+                                      , DEF_CIRCULATE_G => 700000)
+									  , DEF_FORM_B => array(DEF_CIRCULATE_H => 0
+									  , DEF_CIRCULATE_J => 0
+									  , DEF_CIRCULATE_K => 0
+									  , DEF_CIRCULATE_I => 0
+									  , DEF_CIRCULATE_A => 0
+									  , DEF_CIRCULATE_B => 80000
+                                      , DEF_CIRCULATE_C => 150000
+									  , DEF_CIRCULATE_D => 250000
+									  , DEF_CIRCULATE_E => 400000
+                                      , DEF_CIRCULATE_F => 550000
+                                      , DEF_CIRCULATE_G => 700000));
+
+        // DTP
+        $_arr[DEF_EST_DTP] = array(DEF_SIZE_A => 1000
+                                 , DEF_SIZE_B => 1000
+                                 , DEF_SIZE_C => 1000);
+
+        // 装丁
+        $_arr[DEF_EST_FM] = 70000;
+
+        // 特急料金(1ページ550文字 * 4円)
+        $_arr[DEF_EST_HASTE] = 550 * 4;
+
+        // ▼ [2018-06v2]追加分
+        // 図版イラスト
+        $_arr[DEF_EST_IMAGE] = array();
+        $_arr[DEF_EST_IMAGE][DEF_IMAGE_A] = 0;
+        $_arr[DEF_EST_IMAGE][DEF_IMAGE_B] = 50000;
+        $_arr[DEF_EST_IMAGE][DEF_IMAGE_C] = 100000;
+        $_arr[DEF_EST_IMAGE][DEF_IMAGE_D] = 150000;
+        $_arr[DEF_EST_IMAGE][DEF_IMAGE_E] = 200000;
+
+        // 新聞広告
+        $_arr[DEF_EST_AD] = array();
+        $_arr[DEF_EST_AD][DEF_AD_A] = 0;
+        $_arr[DEF_EST_AD][DEF_AD_B] = 740000;
+        $_arr[DEF_EST_AD][DEF_AD_C] = 1740000;
+        $_arr[DEF_EST_AD][DEF_AD_D] = 940000;
+        $_arr[DEF_EST_AD][DEF_AD_E] = 640000;
+        $_arr[DEF_EST_AD][DEF_AD_F] = 140000;
+
+        // 書店営業ＦＡＸ
+        $_arr[DEF_EST_FAX] = array();
+        $_arr[DEF_EST_FAX][DEF_FAX_A] = 0;
+        $_arr[DEF_EST_FAX][DEF_FAX_B] = 20000;
+        $_arr[DEF_EST_FAX][DEF_FAX_C] = 30000;
+        $_arr[DEF_EST_FAX][DEF_FAX_D] = 50000;
+        $_arr[DEF_EST_FAX][DEF_FAX_E] = 80000;
+        $_arr[DEF_EST_FAX][DEF_FAX_F] = 130000;
+        // ▲ [2018-06v2]追加分
+
+        return $_arr;
+	}
+
+
+	/**
+	 * エスケープ文字制御関数
+	 *
+	 * @access : public
+	 * @param  : none
+	 * @return : none
+	 */
+	function stripslashes_deep($value)
+	{
+		return is_array($value) ?
+		 array_map(array($this, 'stripslashes_deep'), $value) :
+		 stripslashes($value);
+	}
+}
+
+$objAgent = new CFormAgent();
+
+if (!$objAgent->doProcess()){
+	$objAgent->_blnFncFlg = false;
+}
+$objAgent->display();
+
+?>
