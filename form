@@ -523,7 +523,6 @@ function fncCalcManagingFee($_arrValue)
     return intval($fee);
 }
 
-
 	/**
 	 * 入力値チェック(入力画面)
 	 *
@@ -1231,7 +1230,7 @@ END_OF_VAR;
   書店用ＦＡＸ送信費     ：\\%11s
   装幀費                 ：\\%11s
   取材日当               ：\\%11s
-  管理費                 ：\\%11s
+  進行管理費             ：\\%11s
   消費税                 ：\\%11s
   交通費                 ：\\%11s
  ---------------------------------------
@@ -1334,22 +1333,27 @@ END_OF_VAR;
         $_arr[DEF_EST_WRITE] = array(
               DEF_WRITE_A => array(DEF_SIZE_A => 4500
                                  , DEF_SIZE_B => 9000
+                                 , DEF_SIZE_C => 4500
             )
             , DEF_WRITE_B => array(DEF_SIZE_A => 3150
                                  , DEF_SIZE_B => 6300
+                                 , DEF_SIZE_C => 3150
             )
             , DEF_WRITE_C => array(DEF_SIZE_A => 0
                                  , DEF_SIZE_B => 0
+                                 , DEF_SIZE_C => 0
             )
         );
 
         // 手書き原稿費用
         $_arr[DEF_EST_NOTES][DEF_SIZE_A] = 300;
         $_arr[DEF_EST_NOTES][DEF_SIZE_B] = 500;
+        $_arr[DEF_EST_NOTES][DEF_SIZE_C] = 300;
 
         // 校正費
         $_arr[DEF_EST_EMEND][DEF_SIZE_A] = 360;
         $_arr[DEF_EST_EMEND][DEF_SIZE_B] = 550;
+        $_arr[DEF_EST_EMEND][DEF_SIZE_C] = 360;
 
 		// ★★★ CSVから印刷製本費を読み込む処理 ★★★
 		$_arr[DEF_EST_BOOKS] = array();
@@ -1399,7 +1403,8 @@ END_OF_VAR;
 
         // DTP
         $_arr[DEF_EST_DTP] = array(DEF_SIZE_A => 1000
-                                 , DEF_SIZE_B => 1000);
+                                 , DEF_SIZE_B => 1000
+                                 , DEF_SIZE_C => 1000);
 
         // 装丁
         $_arr[DEF_EST_FM] = 70000;
