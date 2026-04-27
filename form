@@ -503,6 +503,12 @@ private function saveToCSV()
  */
 function fncCalcManagingFee($_arrValue)
 {
+// 「簡易校正」が選択されている場合は0円を返す
+    // ※DEF_EMEND_KANI は「簡易校正」の定数と想定
+    if ($this->_arrPostData['input'][DEF_EST_EMEND] == DEF_EMEND_KANI) {
+        return 0;
+    }
+	
     $fee = 0;
     // 管理費と消費税を除く、それまでの合計金額を算出
     $subtotal = array_sum($_arrValue);
@@ -734,14 +740,13 @@ function fncCalcManagingFee($_arrValue)
 				= DEF_STATE_A;
 		}
 
-		// ③校正-あり
-		if (isset($this->_arrPostData['input'][DEF_EST_EMEND])) {
-			$_arrInit[DEF_EST_EMEND]
-				= $this->_arrPostData['input'][DEF_EST_EMEND];
-		} else {
-			$_arrInit[DEF_EST_EMEND]
-				= DEF_MISPRINT_A;
-		}
+		// ③校正
+       if (isset($this->_arrPostData['input'][DEF_EST_EMEND])) {
+           $_arrInit[DEF_EST_EMEND] = $this->_arrPostData['input'][DEF_EST_EMEND];
+       } else {
+           // デフォルトで「簡易校正」をセット
+           $_arrInit[DEF_EST_EMEND] = DEF_EMEND_KANI; 
+       }
 
 		// ④書籍体裁-並製　ソフトカバー
 		if (isset($this->_arrPostData['input'][DEF_EST_COVER])) {
@@ -758,7 +763,7 @@ function fncCalcManagingFee($_arrValue)
 				= $this->_arrPostData['input'][DEF_EST_CIRCULATE];
 		} else {
 			$_arrInit[DEF_EST_CIRCULATE]
-				= DEF_CIRCULATE_C; // [2018-06v2] DEF_CIRCULATE_H;
+				= DEF_CIRCULATE_H; // [2018-06v2] DEF_CIRCULATE_H;
 		}
 
 		// ⑥ページ数-112ｐ
@@ -767,7 +772,7 @@ function fncCalcManagingFee($_arrValue)
 				= $this->_arrPostData['input'][DEF_EST_PAGE];
 		} else {
 			$_arrInit[DEF_EST_PAGE]
-				= DEF_PAGE_C; // [2018-06v2] DEF_PAGE_K;
+				= DEF_PAGE_O; // [2018-06v2] DEF_PAGE_K;
 		}
 
     // カラーページ選択の初期値
@@ -806,7 +811,7 @@ function fncCalcManagingFee($_arrValue)
 				= $this->_arrPostData['input'][DEF_EST_DAY];
 		} else {
 			$_arrInit[DEF_EST_DAY]
-				= DEF_DAY_B; // [2018-06v2] DEF_DAY_A;
+				= DEF_DAY_A; // [2018-06v2] DEF_DAY_A;
 		}
 
 		// 新聞広告 ※[2018-06v2] 新規追加
@@ -831,7 +836,7 @@ function fncCalcManagingFee($_arrValue)
 				= $this->_arrPostData['input'][DEF_EST_SALES];
 		} else {
 			$_arrInit[DEF_EST_SALES]
-				= DEF_FORM_B; // [2018-06v2] DEF_FORM_A;
+				= DEF_FORM_C; // [2018-06v2] DEF_FORM_A;
 		}
 
 		// 完成希望日時
@@ -883,14 +888,14 @@ function fncCalcManagingFee($_arrValue)
 				break;
 		}
 
-		// 校正
+		// 校正の表示文字列
 		switch ($this->_arrPostData['input'][DEF_EST_EMEND]) {
-			case DEF_MISPRINT_A:
-				$_arrDispStr['input'][DEF_EST_EMEND] = DEF_MISPRINT_A_DISP;
-				break;
-			case DEF_MISPRINT_B:
-				$_arrDispStr['input'][DEF_EST_EMEND] = DEF_MISPRINT_B_DISP;
-				break;
+		    case DEF_EMEND_KANI:
+		        $_arrDispStr['input'][DEF_EST_EMEND] = "簡易校正";
+		        break;
+		    case DEF_EMEND_HONKAKU:
+		        $_arrDispStr['input'][DEF_EST_EMEND] = "本格校正";
+		        break;
 		}
 
 		// 書籍体裁
@@ -1267,6 +1272,7 @@ $_body = sprintf($_bodyTmp,
 	{
 		$_bodyTmp  = <<< END_OF_VAR
   執筆                   ：%s
+  校正                    ：%s
   書籍体裁               ：%s
   書籍の種類             ：%s
   装幀(必ず付属されます) ：%s
@@ -1283,6 +1289,7 @@ END_OF_VAR;
 		$_arrDispStr = $this->fncMakeDispStr();
 
 		$_body = sprintf($_bodyTmp, $_arrDispStr['input'][DEF_EST_WRITE]
+		                          ,	$_arrDispStr['input'][DEF_EST_EMEND]
 		                          , $_arrDispStr['input'][DEF_EST_COVER]
 		                          , $_arrDispStr['input'][DEF_EST_TYPE]
 		                          , $_arrDispStr['input'][DEF_EST_FM]
@@ -1385,6 +1392,7 @@ END_OF_VAR;
 									  , DEF_CIRCULATE_A => 0
 									  , DEF_CIRCULATE_B => 150000
                                       , DEF_CIRCULATE_C => 150000
+                                      , DEF_CIRCULATE_L => 200000
 									  , DEF_CIRCULATE_D => 250000
 									  , DEF_CIRCULATE_E => 400000
                                       , DEF_CIRCULATE_F => 550000
@@ -1396,6 +1404,7 @@ END_OF_VAR;
 									  , DEF_CIRCULATE_A => 0
 									  , DEF_CIRCULATE_B => 80000
                                       , DEF_CIRCULATE_C => 150000
+                                      , DEF_CIRCULATE_L => 200000
 									  , DEF_CIRCULATE_D => 250000
 									  , DEF_CIRCULATE_E => 400000
                                       , DEF_CIRCULATE_F => 550000
