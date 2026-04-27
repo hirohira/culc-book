@@ -251,7 +251,13 @@
     <label><input name="input[{$smarty.const.DEF_EST_SALES}]" type="radio" value="{$smarty.const.DEF_FORM_C}"{if $arrInit[$smarty.const.DEF_EST_SALES] == $smarty.const.DEF_FORM_C} checked{/if}>
     書店流通なし</label>
   </div>
-
+<div>
+    <h3>自伝動画（写真・アニメ）作成</h3>
+    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_7}" {if $arrInit[{$smarty.const.DEF_EST_MOVIE}] == $smarty.const.DEF_MOVIE_7}checked{/if}> 7分間</label>
+    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_14}" {if $arrInit[{$smarty.const.DEF_EST_MOVIE}] == $smarty.const.DEF_MOVIE_14}checked{/if}> 14分間</label>
+    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_21}" {if $arrInit[{$smarty.const.DEF_EST_MOVIE}] == $smarty.const.DEF_MOVIE_21}checked{/if}> 21分間</label>
+    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_NONE}" {if $arrInit[{$smarty.const.DEF_EST_MOVIE}] == $smarty.const.DEF_MOVIE_NONE}checked{/if}> なし</label>
+</div>
 <div>
     <h3>完成（印刷仕上がり）</h3>
     {if isset($arrErrMsg.date)}<font color="red">{$arrErrMsg.date}</font><br>{/if}
