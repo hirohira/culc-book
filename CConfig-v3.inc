@@ -221,6 +221,19 @@ define('DEF_FORM_A_DISP', '書店へ委託販売');
 define('DEF_FORM_B_DISP', 'アマゾンでの販売');
 define('DEF_FORM_C_DISP', '書店流通なし');
 
+// 自伝動画作成 [2026-04-27] 新規追加
+define('DEF_EST_MOVIE', 19); 
+
+// 自伝動画の選択肢
+define('DEF_MOVIE_NONE', 0); // なし
+define('DEF_MOVIE_7',    1); // 7分間
+define('DEF_MOVIE_14',   2); // 14分間
+define('DEF_MOVIE_21',   3); // 21分間
+define('DEF_MOVIE_NONE_DISP', 'なし');
+define('DEF_MOVIE_7_DISP',    '7分間');
+define('DEF_MOVIE_14_DISP',   '14分間');
+define('DEF_MOVIE_21_DISP',   '21分間');
+
 // 装幀
 define('DEF_FM_DISP', 'カバー・オビ付き（デザイナーが制作）');
 
