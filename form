@@ -1,4 +1,6 @@
 <?php
+// ini_set('display_errors', 1);
+// error_reporting(E_ALL);
 /*****************************************************************************
  * 自動見積もりフォーム
  *
@@ -1257,45 +1259,45 @@ END_OF_VAR;
 	 * @param  : none
 	 * @return : string
 	 */
-	function fncMakeMailFormat_detail()
-	{
-		$_bodyTmp  = <<< END_OF_VAR
+function fncMakeMailFormat_detail()
+{
+    $_bodyTmp  = <<< END_OF_VAR
   執筆費                 ：\\%11s
-  印刷・製本費           ：\\%11s
+%s  印刷・製本費           ：\\%11s
   本文レイアウト費       ：\\%11s
   流通費                 ：\\%11s
   図版イラスト費         ：\\%11s
-  新聞広告費             ：\\%11s
+  新聞広告費            ：\\%11s
   書店用ＦＡＸ送信費     ：\\%11s
   装幀費                 ：\\%11s
   取材日当               ：\\%11s
   進行管理費             ：\\%11s
-  自伝動画作成費          ：\\%11s
+  自伝動画作成費         ：\\%11s
   消費税                 ：\\%11s
   交通費                 ：\\%11s
  ---------------------------------------
   合計                   ：\\%11s（税込・送料別）
 END_OF_VAR;
 
-$_body = sprintf($_bodyTmp, 
-    number_format($this->_arrValue[DEF_EST_WRITE]), // 執筆費
-    ($this->_arrValue[DEF_EST_HASTE] > 0) ? sprintf("  特急料金               ：\\%11s\r\n", number_format($this->_arrValue[DEF_EST_HASTE])) : '', // 特急料金がある場合のみ表示
-    number_format($this->_arrValue[DEF_EST_BOOKS]), // 印刷・製本費
-    number_format($this->_arrValue[DEF_EST_DTP]),   // 本文レイアウト費
-    number_format($this->_arrValue[DEF_EST_SALES]), // 流通費
-    number_format($this->_arrValue[DEF_EST_IMAGE]), // 図版イラスト費
-    number_format($this->_arrValue[DEF_EST_AD]),    // 新聞広告費
-    number_format($this->_arrValue[DEF_EST_FAX]),   // 書店用FAX送信費
-    number_format($this->_arrValue[DEF_EST_FM]),    // 装幀費
-    number_format($this->_arrValue[DEF_EST_DAY]),   // 取材日当
-    number_format($this->_arrValue[DEF_EST_TYPE]),  // 管理費
-    number_format($this->_arrValue[DEF_EST_MOVIE]),  // 自伝動画作成費
-    number_format($this->_arrValue[DEF_EST_TAX]),   // 消費税
-    number_format($this->_arrValue[DEF_EST_AREA]),  // 交通費
-    number_format($this->_intSumValue)              // 合計金額
-);
-		return $_body;
-	}
+    $_body = sprintf($_bodyTmp, 
+        number_format($this->_arrValue[DEF_EST_WRITE]), // 1: 執筆費
+        ($this->_arrValue[DEF_EST_HASTE] > 0) ? sprintf("  特急料金               ：\\%11s\r\n", number_format($this->_arrValue[DEF_EST_HASTE])) : '', // 2: 特急料金
+        number_format($this->_arrValue[DEF_EST_BOOKS]), // 3: 印刷・製本費
+        number_format($this->_arrValue[DEF_EST_DTP]),   // 4: 本文レイアウト費
+        number_format($this->_arrValue[DEF_EST_SALES]), // 5: 流通費
+        number_format($this->_arrValue[DEF_EST_IMAGE]), // 6: 図版イラスト費
+        number_format($this->_arrValue[DEF_EST_AD]),    // 7: 新聞広告費
+        number_format($this->_arrValue[DEF_EST_FAX]),   // 8: 書店用FAX送信費
+        number_format($this->_arrValue[DEF_EST_FM]),    // 9: 装幀費
+        number_format($this->_arrValue[DEF_EST_DAY]),   // 10: 取材日当
+        number_format($this->_arrValue[DEF_EST_TYPE]),  // 11: 管理費
+        number_format($this->_arrValue[DEF_EST_MOVIE]), // 12: 自伝動画作成費 (★追加)
+        number_format($this->_arrValue[DEF_EST_TAX]),   // 13: 消費税
+        number_format($this->_arrValue[DEF_EST_AREA]),  // 14: 交通費
+        number_format($this->_intSumValue)              // 15: 合計金額
+    );
+    return $_body;
+}
 
 	/**
 	 * メールテンプレート作成 本の仕様予定
