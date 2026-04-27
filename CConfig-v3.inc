@@ -65,11 +65,11 @@ define('DEF_STATE_B', 1);      // 手書き原稿
 define('DEF_STATE_A_DISP', 'なし');
 define('DEF_STATE_B_DISP', 'あり');
 
-// ③校正（誤字、脱字のチェック）
-define('DEF_MISPRINT_A', 0);   // あり
-define('DEF_MISPRINT_B', 1);   // なし
-define('DEF_MISPRINT_A_DISP', 'あり');
-define('DEF_MISPRINT_B_DISP', 'なし');
+// ③校正（誤字、脱字のチェック） - 2026/02 仕様変更
+define('DEF_EMEND_KANI',     0);  // 簡易校正
+define('DEF_EMEND_HONKAKU',   1);  // 本格校正
+define('DEF_EMEND_KANI_DISP', '簡易校正');
+define('DEF_EMEND_HONKAKU_DISP', '本格校正');
 
 // ④書籍体裁
 define('DEF_BOOK_SOFT', 0);    // 並製
