@@ -384,6 +384,7 @@ private function saveToCSV()
     $researchDaysDisplay = $arrDispStr['input'][DEF_EST_DAY];        // 取材日数
     $adDisplay = $arrDispStr['input'][DEF_EST_AD];                   // 新聞広告
     $salesTypeDisplay = $arrDispStr['input'][DEF_EST_SALES];         // 流通形態
+    $movieDisplay = $arrDispStr['input'][DEF_EST_MOVIE];         // 自伝動画作成
     $colorPageDisplay = $arrDispStr['input'][DEF_EST_COLAR];         // カラーページ数
 
 
@@ -392,7 +393,7 @@ private function saveToCSV()
         '執筆費', '印刷・製本費', '本文レイアウト費', '流通費', '図版イラスト費', 
         '新聞広告費', '書店用FAX送信費', '装幀費', '取材日当', '管理費', '特急料金',
         '消費税', '交通費', '合計', '執筆', '書籍体裁', '書籍の種類', 
-        '装幀', '部数', 'ページ数', 'カラーページ数', '本の大きさ', '取材日数', '新聞広告', '流通形態', 'お渡し希望日時',
+        '装幀', '部数', 'ページ数', 'カラーページ数', '本の大きさ', '取材日数', '新聞広告', '流通形態', '自伝動画作成費', '自伝動画作成', 'お渡し希望日時',
         'お名前', 'E-mail', '住所', '電話番号', 'ご要望'
     ];
 
@@ -423,6 +424,8 @@ private function saveToCSV()
         $researchDaysDisplay,            // 取材日数
 		$adDisplay,                      // 新聞広告
         $salesTypeDisplay,               // 流通形態
+		$this->_arrValue[DEF_EST_MOVIE], // 自伝動画作成費
+		$movieDisplay,                   // 自伝動画作成
         sprintf("%s年%s月%s日", $this->_arrPostData['date']['Year'], $this->_arrPostData['date']['Month'], $this->_arrPostData['date']['Day']), // お渡し希望日時
         mb_convert_kana($this->_arrPostData['user']['name'], "KV", "UTF-8"),  // お名前
         $this->_arrPostData['user']['email'],            // E-mail
@@ -842,6 +845,15 @@ function fncCalcManagingFee($_arrValue)
 				= DEF_FORM_C; // [2018-06v2] DEF_FORM_A;
 		}
 
+		// 自伝動画作成 ※[2026-04-27] 新規追加
+		if (isset($this->_arrPostData['input'][DEF_EST_MOVIE])) {
+		    $_arrInit[DEF_EST_MOVIE] = $this->_arrPostData['input'][DEF_EST_MOVIE];
+		} else {
+		    $_arrInit[DEF_EST_MOVIE] = DEF_MOVIE_NONE;
+		}
+
+
+
 		// 完成希望日時
 		if (isset($this->_arrPostData['date']['Year'])) {
 			$_arrInit['date'] = sprintf("%s-%s-%s", $this->_arrPostData['date']['Year']
@@ -1060,6 +1072,25 @@ function fncCalcManagingFee($_arrValue)
 				break;
 		}
 
+		// 自伝動画作成 [2026-04-27] 追加
+		switch ($this->_arrPostData['input'][DEF_EST_MOVIE]) {
+		    case DEF_MOVIE_7:
+		        $_arrDispStr['input'][DEF_EST_MOVIE] = DEF_MOVIE_7_DISP;
+		        break;
+		    case DEF_MOVIE_14:
+		        $_arrDispStr['input'][DEF_EST_MOVIE] = DEF_MOVIE_14_DISP;
+		        break;
+		    case DEF_MOVIE_21:
+		        $_arrDispStr['input'][DEF_EST_MOVIE] = DEF_MOVIE_21_DISP;
+		        break;
+		    case DEF_MOVIE_NONE:
+		   default:
+		        $_arrDispStr['input'][DEF_EST_MOVIE] = DEF_MOVIE_NONE_DISP;
+		        break;
+		}
+
+
+
 		// お渡し希望日時
 		if (empty($this->_arrPostData['date']['Year'])) {
 			$_arrDispStr['date'] = '指定無し';
@@ -1239,6 +1270,7 @@ END_OF_VAR;
   装幀費                 ：\\%11s
   取材日当               ：\\%11s
   進行管理費             ：\\%11s
+  自伝動画作成費          ：\\%11s
   消費税                 ：\\%11s
   交通費                 ：\\%11s
  ---------------------------------------
@@ -1257,6 +1289,7 @@ $_body = sprintf($_bodyTmp,
     number_format($this->_arrValue[DEF_EST_FM]),    // 装幀費
     number_format($this->_arrValue[DEF_EST_DAY]),   // 取材日当
     number_format($this->_arrValue[DEF_EST_TYPE]),  // 管理費
+    number_format($this->_arrValue[DEF_EST_MOVIE]),  // 自伝動画作成費
     number_format($this->_arrValue[DEF_EST_TAX]),   // 消費税
     number_format($this->_arrValue[DEF_EST_AREA]),  // 交通費
     number_format($this->_intSumValue)              // 合計金額
@@ -1285,6 +1318,7 @@ $_body = sprintf($_bodyTmp,
   お住まいの地域         ：%s
   取材日数               ：%s
   流通形態               ：%s
+  自伝動画作成         ：%s
   お渡し希望日時         ：%s
 END_OF_VAR;
 
@@ -1302,6 +1336,7 @@ END_OF_VAR;
 		                          , $_arrDispStr['input'][DEF_EST_AREA]
 		                          , $_arrDispStr['input'][DEF_EST_DAY]
 								  , $_arrDispStr['input'][DEF_EST_SALES]
+								  , $_arrDispStr['input'][DEF_EST_MOVIE]
 		                          , $_arrDispStr['date']);
 		return $_body;
 	}
