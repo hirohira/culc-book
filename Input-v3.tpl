@@ -21,16 +21,17 @@
 <div class="entry form">
 <h4>1.見積入力</h4>
 <form name="frmInput" method="post" action="">
-  <div>
+<div>
     <h3>執筆</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="{$smarty.const.DEF_WRITE_A}"{if $arrInit[$smarty.const.DEF_EST_WRITE] == $smarty.const.DEF_WRITE_A} checked{/if}>
+    <label><input name="input[1]" type="radio" value="0" onclick="checkEmendMode(this.value)">
     執筆を依頼する<span class="red">（オススメ）</span></label><br />
-    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="{$smarty.const.DEF_WRITE_B}"{if $arrInit[$smarty.const.DEF_EST_WRITE] == $smarty.const.DEF_WRITE_B} checked{/if}>
+    
+    <label><input name="input[1]" type="radio" value="1" onclick="checkEmendMode(this.value)">
     リライト（あなたの原稿をもとにプロが書き直し）</label><br />
-    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="{$smarty.const.DEF_WRITE_C}"{if $arrInit[$smarty.const.DEF_EST_WRITE] == $smarty.const.DEF_WRITE_C} checked{/if}>
+    
+    <label><input name="input[1]" type="radio" value="2" checked onclick="checkEmendMode(this.value)">
     自分で書く(無料)</label>
-  
-  </div>
+</div>
 {*
 ▼[2018-06-03] 削除
   <div class="side-20">
@@ -50,6 +51,21 @@
   </div>
 ▲[2018-06-03] 削除
 *}
+
+{* --- 追加：校正セクション --- *}
+<div>
+    <h3>校正</h3>
+    <label>
+        <input name="input[{$smarty.const.DEF_EST_EMEND}]" type="radio" id="emend_kani" value="{$smarty.const.DEF_EMEND_KANI}" {if $arrInit[$smarty.const.DEF_EST_EMEND] == $smarty.const.DEF_EMEND_KANI} checked{/if}>
+        簡易校正
+    </label>
+    <label>
+        <input name="input[{$smarty.const.DEF_EST_EMEND}]" type="radio" id="emend_honkaku" value="{$smarty.const.DEF_EMEND_HONKAKU}" {if $arrInit[$smarty.const.DEF_EST_EMEND] == $smarty.const.DEF_EMEND_HONKAKU} checked{/if}>
+        本格校正<span class="red">（標準）</span>
+    </label>
+    <br>
+    <span id="emend_note" style="color: #666; font-size: 0.9em;">※「自分で書く」以外を選択された場合は本格校正のみとなります。</span>
+</div>
   <div>
     <h3>書籍体裁<span class="modal-q"><a href="https://www.publishing-house.jp/flow.html#10" target="_blank">?</a></span></h3>
     <label><input name="input[{$smarty.const.DEF_EST_COVER}]" type="radio" value="{$smarty.const.DEF_BOOK_SOFT}"{if $arrInit[$smarty.const.DEF_EST_COVER] == $smarty.const.DEF_BOOK_SOFT} checked{/if}>
@@ -272,5 +288,32 @@
 
 </div>
 </div>
+<script type="text/javascript">
+{literal}
+function checkEmendMode(writeValue) {
+    var kaniRadio = document.getElementById('emend_kani');
+    var honkakuRadio = document.getElementById('emend_honkaku');
+    
+    // DEF_WRITE_C (自分で書く) の値は form.php 等の定数に合わせる (通常は 3 など)
+    // ここでは Smarty 経由で値を判断するか、固定値で判定します
+    if (writeValue == "{/literal}{$smarty.const.DEF_WRITE_C}{literal}") {
+        // 「自分で書く」の場合：簡易校正を選択可能にする
+        kaniRadio.disabled = false;
+    } else {
+        // それ以外の場合：本格校正を強制選択し、簡易を無効化
+        honkakuRadio.checked = true;
+        kaniRadio.disabled = true;
+    }
+}
+
+// ページ読み込み時の初期状態設定
+window.onload = function() {
+    var currentWrite = document.querySelector('input[name="input[{/literal}{$smarty.const.DEF_EST_WRITE}{literal}]"]:checked');
+    if (currentWrite) {
+        checkEmendMode(currentWrite.value);
+    }
+};
+{/literal}
+</script>
 
 {include file='Footer.tpl'}
