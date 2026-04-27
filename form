@@ -38,6 +38,7 @@ class CFormAgent
 	                        , DEF_EST_FAX   => 0 // 書店営業ＦＡＸ [2018-06v2] 新規追加
 	                        , DEF_EST_TYPE  => 0 // 書籍の種類＝管理費 [2022-06v3] 新規追加
 	                        , DEF_EST_COLAR => 0 // カラーページ [2024-10-18] 新規追加
+	                        , DEF_EST_MOVIE => 0 // 自伝動画作成
 	                        , DEF_EST_TAX   => 0 // 消費税
 	                        ); // 内訳
 	var $_intSumValue = 0;         // 総額
@@ -338,6 +339,8 @@ function isWithinFourMonths($dateData)
         $this->_arrValue[DEF_EST_FAX] = $_arrEstData[DEF_EST_FAX][$this->_arrPostData['input'][DEF_EST_FAX]];
         // ▲ [2018-06v2]追加分
 
+        // 自伝動画作成の計算
+        $this->_arrValue[DEF_EST_MOVIE] = $_arrEstData[DEF_EST_MOVIE][$this->_arrPostData['input'][DEF_EST_MOVIE]];
 
         // [2022-06v3]追加 管理費
             $this->_arrValue[DEF_EST_TYPE] = $this->fncCalcManagingFee($this->_arrValue);
