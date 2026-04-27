@@ -1452,6 +1452,14 @@ END_OF_VAR;
         $_arr[DEF_EST_FAX][DEF_FAX_F] = 130000;
         // ▲ [2018-06v2]追加分
 
+        // 自伝動画作成の料金設定
+        $_arr[DEF_EST_MOVIE] = array(
+            DEF_MOVIE_NONE => 0,
+            DEF_MOVIE_7    => 100000,
+            DEF_MOVIE_14   => 150000,
+            DEF_MOVIE_21   => 200000
+        );
+
         return $_arr;
 	}
 
