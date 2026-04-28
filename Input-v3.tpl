@@ -251,12 +251,12 @@
     <label><input name="input[{$smarty.const.DEF_EST_SALES}]" type="radio" value="{$smarty.const.DEF_FORM_C}"{if $arrInit[$smarty.const.DEF_EST_SALES] == $smarty.const.DEF_FORM_C} checked{/if}>
     書店流通なし</label>
   </div>
-<div>
-    <h3>自伝動画（写真・アニメ）作成</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_7}" {if $arrInit[{$smarty.const.DEF_EST_MOVIE}] == $smarty.const.DEF_MOVIE_7}checked{/if}> 7分間</label>
-    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_14}" {if $arrInit[{$smarty.const.DEF_EST_MOVIE}] == $smarty.const.DEF_MOVIE_14}checked{/if}> 14分間</label>
-    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_21}" {if $arrInit[{$smarty.const.DEF_EST_MOVIE}] == $smarty.const.DEF_MOVIE_21}checked{/if}> 21分間</label>
-    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_NONE}" {if $arrInit[{$smarty.const.DEF_EST_MOVIE}] == $smarty.const.DEF_MOVIE_NONE}checked{/if}> なし</label>
+<div class="number">
+<h3>自伝動画（写真・アニメ）作成<span class="modal-q"><a href="https://www.publishing-house.jp/today/sample.html" target="_blank">?</a></span></h3>
+    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_7}" {if $arrInit[$smarty.const.DEF_EST_MOVIE] == $smarty.const.DEF_MOVIE_7}checked{/if}> 7分間</label>
+    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_14}" {if $arrInit[$smarty.const.DEF_EST_MOVIE] == $smarty.const.DEF_MOVIE_14}checked{/if}> 14分間</label>
+    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_21}" {if $arrInit[$smarty.const.DEF_EST_MOVIE] == $smarty.const.DEF_MOVIE_21}checked{/if}> 21分間</label>
+    <label><input name="input[{$smarty.const.DEF_EST_MOVIE}]" type="radio" value="{$smarty.const.DEF_MOVIE_NONE}" checked="checked" {if $arrInit[$smarty.const.DEF_EST_MOVIE] == $smarty.const.DEF_MOVIE_NONE}checked{/if}> なし</label>
 </div>
 <div>
     <h3>完成（印刷仕上がり）</h3>
@@ -300,13 +300,10 @@ function checkEmendMode(writeValue) {
     var kaniRadio = document.getElementById('emend_kani');
     var honkakuRadio = document.getElementById('emend_honkaku');
     
-    // DEF_WRITE_C (自分で書く) の値は form.php 等の定数に合わせる (通常は 3 など)
-    // ここでは Smarty 経由で値を判断するか、固定値で判定します
+    // DEF_WRITE_Cを展開するために一時的にliteralを閉じる
     if (writeValue == "{/literal}{$smarty.const.DEF_WRITE_C}{literal}") {
-        // 「自分で書く」の場合：簡易校正を選択可能にする
         kaniRadio.disabled = false;
     } else {
-        // それ以外の場合：本格校正を強制選択し、簡易を無効化
         honkakuRadio.checked = true;
         kaniRadio.disabled = true;
     }
@@ -314,12 +311,14 @@ function checkEmendMode(writeValue) {
 
 // ページ読み込み時の初期状態設定
 window.onload = function() {
+    // 【ここが最重要】定数部分でliteralを閉じて再開する
     var currentWrite = document.querySelector('input[name="input[{/literal}{$smarty.const.DEF_EST_WRITE}{literal}]"]:checked');
+    
+    // ここから下のブロックはそのまま残ります
     if (currentWrite) {
         checkEmendMode(currentWrite.value);
     }
 };
 {/literal}
 </script>
-
 {include file='Footer.tpl'}
