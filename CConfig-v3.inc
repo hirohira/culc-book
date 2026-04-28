@@ -42,6 +42,7 @@ define('DEF_EST_AD',    15);   // 新聞広告 ※[2018-06-03] 新規追加
 define('DEF_EST_FAX',   16);   // 書店営業ＦＡＸ ※[2018-06-03] 新規追加
 define('DEF_EST_TYPE',  17);    // 書籍の種類（→管理費）
 define('DEF_EST_COLAR',  18);    // カラーページ　2004-10-18追加
+define('DEF_EST_MOVIE', 19); 
 define('DEF_EST_TAX'  , 99);   // 消費税
 define('DEF_INT_SUM', 100);  // 合計金額
 
@@ -165,6 +166,7 @@ define('DEF_AREA_F', 6);
 define('DEF_AREA_G', 7);
 define('DEF_AREA_H', 8);
 define('DEF_AREA_I', 9);
+define('DEF_AREA_J', 0);
 define('DEF_AREA_A_DISP', '北海道');
 define('DEF_AREA_B_DISP', '東北');
 define('DEF_AREA_C_DISP', '北陸');
@@ -174,6 +176,7 @@ define('DEF_AREA_F_DISP', '近畿');
 define('DEF_AREA_G_DISP', '中国');
 define('DEF_AREA_H_DISP', '四国');
 define('DEF_AREA_I_DISP', '九州');
+define('DEF_AREA_I_DISP', '実費精算');
 
 // 取材日数
 define('DEF_DAY_A', 0);
@@ -220,9 +223,6 @@ define('DEF_FORM_C', 2);       // 書店流通なし
 define('DEF_FORM_A_DISP', '書店へ委託販売');
 define('DEF_FORM_B_DISP', 'アマゾンでの販売');
 define('DEF_FORM_C_DISP', '書店流通なし');
-
-// 自伝動画作成 [2026-04-27] 新規追加
-define('DEF_EST_MOVIE', 19); 
 
 // 自伝動画の選択肢
 define('DEF_MOVIE_NONE', 0); // なし
