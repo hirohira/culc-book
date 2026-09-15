@@ -5,31 +5,27 @@
 
 <section>
 <div class="auto">
-  <div class="auto-img"><img src="/img/2017/pub-img.jpg" width="166" height="247" alt=""/></div><p>自動見積を希望される方は、下記の質問項目にお答えください。<br>
-    空白欄がある場合は（おすすめ）とある項目で、御見積します。<br>
-    すべての項目の入力が済みましたら、一番下にある<br>
-    「この内容で見積する」というボタンを押してください。<br>
-    見積金額を明示し、<br>
-    お客様の情報を入力していただくページへと進みます。<br>
-    なお、見積内容と金額、お客様の入力情報の確認のため、<br>
-    すべてを入力し終わった後に、確認のメールを１通、<br>
-    お送りさせていただきます。</p>
+  <div class="auto-img"><img alt="dentaku.jpeg" src="https://www.publishing-house.jp/lp/photo/dentaku.jpeg" width="216" height="247" class="mt-image-none" /></div><p>まずは、お考えの本に近い条件を選び、費用の目安をご確認ください。<br/><br/>
+見積金額の表示後、お客様情報入力画面へ進みます。その内容は、確認メールでお知らせします。<br/><br/>
+なお、各項目の右側にある「？」マークを押すと、用語の意味や選び方を説明するヘルプ画面が開きます。<br/><br/>
+</p>
     <div class="clear"><hr></div>
 </div>
 </section>
+
 
 <div class="entry form">
 <h4>1.見積入力</h4>
 <form name="frmInput" method="post" action="">
 <div>
     <h3>執筆</h3>
-    <label><input name="input[1]" type="radio" value="0" onclick="checkEmendMode(this.value)">
+    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="0" checked onclick="checkEmendMode(this.value)">
     執筆を依頼する<span class="red">（オススメ）</span></label><br />
     
-    <label><input name="input[1]" type="radio" value="1" onclick="checkEmendMode(this.value)">
+    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="1" onclick="checkEmendMode(this.value)">
     リライト（あなたの原稿をもとにプロが書き直し）</label><br />
     
-    <label><input name="input[1]" type="radio" value="2" checked onclick="checkEmendMode(this.value)">
+    <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="2" onclick="checkEmendMode(this.value)">
     自分で書く(無料)</label>
 </div>
 {*
@@ -96,7 +92,7 @@
     １００部</label>
     <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_B}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_B} checked{/if}>
     ２００部</label>
-    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_C}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_C} checked{/if}>
+    <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_C}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_C} checked{/if} checked>
     ３００部<span class="red">（オススメ）</span></label><br />
     <label><input name="input[{$smarty.const.DEF_EST_CIRCULATE}]" type="radio" value="{$smarty.const.DEF_CIRCULATE_L}"{if $arrInit[$smarty.const.DEF_EST_CIRCULATE] == $smarty.const.DEF_CIRCULATE_L} checked{/if}>
     ４００部</label>
@@ -124,7 +120,7 @@
     １１２ｐ</label>　<br />
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_B}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_B} checked{/if}>
     １２８ｐ</label>
-    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_C}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_C} checked{/if}>
+    <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_C}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_C} checked{/if} checked>
     １４４ｐ<span class="red">（オススメ）</span></label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_D}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_D} checked{/if}>
     １６０ｐ</label>
@@ -200,29 +196,45 @@
 {* ▲[2018-06-03] 追加 *}
 
   <div class="number">
-    <h3>取材日数</h3>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_B}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_B} checked{/if}>
-    １日<span class="red">（オススメ）</span></label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_C}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_C} checked{/if}>
-    ２日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_D}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_D} checked{/if}>
-    ３日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_E}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_E} checked{/if}>
-    ４日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_F}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_F} checked{/if}>
-    ５日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_G}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_G} checked{/if}>
-    ６日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_H}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_H} checked{/if}>
-    ７日</label>
-    <label><input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_A}"{if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_A} checked{/if}>
-    なし</label>
-    <br clear="clear"> 
+<h3>取材日数</h3>
+    <label>
+      <input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_B}" {if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_B || $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_A || !$arrInit[$smarty.const.DEF_EST_DAY]} checked{/if}>
+      １日<span class="red">（オススメ）</span>
+    </label>
+    <label>
+      <input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_C}" {if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_C} checked{/if}>
+      ２日
+    </label>
+    <label>
+      <input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_D}" {if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_D} checked{/if}>
+      ３日
+    </label>
+    <label>
+      <input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_E}" {if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_E} checked{/if}>
+      ４日
+    </label>
+    <label>
+      <input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_F}" {if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_F} checked{/if}>
+      ５日
+    </label>
+    <label>
+      <input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_G}" {if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_G} checked{/if}>
+      ６日
+    </label>
+    <label>
+      <input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_H}" {if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_H} checked{/if}>
+      ７日
+    </label>
+    <label>
+      <input name="input[{$smarty.const.DEF_EST_DAY}]" type="radio" value="{$smarty.const.DEF_DAY_A}" {if $arrInit[$smarty.const.DEF_EST_DAY] == $smarty.const.DEF_DAY_A && isset($smarty.post.input)} checked{/if}>
+      なし
+    </label>
+    <br clear="clear">
   </div>
 
 {* ▼[2018-06-03] 追加 *}
   <div class="ad-channel">
-    <h3>新聞広告　※３段1/8スペースの場合</h3>
+    <h3>新聞広告　<span>※３段1/8スペースの場合</span></h3>
     <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_B}"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_B} checked{/if}>日本経済新聞</label>
     <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_C}"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_C} checked{/if}>朝日新聞</label>
     <label><input name="input[{$smarty.const.DEF_EST_AD}]" type="radio" value="{$smarty.const.DEF_AD_D}"{if $arrInit[$smarty.const.DEF_EST_AD] == $smarty.const.DEF_AD_D} checked{/if}>読売新聞</label>
@@ -242,10 +254,10 @@
   </div>
 {* ▲[2018-06-03] 追加 *}
 
-  <div>
-    <h3>販売形態</h3>
+  <div class="number">
+    <h3>販売形態<span>※一般書店での販売をご希望の場合は、部数は３００部以上をお選びください</span></h3>
     <label><input name="input[{$smarty.const.DEF_EST_SALES}]" type="radio" value="{$smarty.const.DEF_FORM_A}"{if $arrInit[$smarty.const.DEF_EST_SALES] == $smarty.const.DEF_FORM_A} checked{/if}>
-    書店流通あり（書店へ委託販売）</label>　<br />
+    書店流通あり（アマゾン＋一般書店での販売）</label>　<br />
     <label><input name="input[{$smarty.const.DEF_EST_SALES}]" type="radio" value="{$smarty.const.DEF_FORM_B}" checked="checked"{if $arrInit[$smarty.const.DEF_EST_SALES] == $smarty.const.DEF_FORM_B} checked{/if}>
     流通あり（アマゾンのみ販売）{* [2018-06-03] 削除<span class="red">（オススメ）</span>*}</label><br />
     <label><input name="input[{$smarty.const.DEF_EST_SALES}]" type="radio" value="{$smarty.const.DEF_FORM_C}"{if $arrInit[$smarty.const.DEF_EST_SALES] == $smarty.const.DEF_FORM_C} checked{/if}>
