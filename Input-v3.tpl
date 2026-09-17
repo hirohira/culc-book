@@ -21,10 +21,10 @@
     <h3>執筆</h3>
     <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="0" checked onclick="checkEmendMode(this.value)">
     執筆を依頼する<span class="red">（オススメ）</span></label><br />
-    
+
     <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="1" onclick="checkEmendMode(this.value)">
     リライト（あなたの原稿をもとにプロが書き直し）</label><br />
-    
+
     <label><input name="input[{$smarty.const.DEF_EST_WRITE}]" type="radio" value="2" onclick="checkEmendMode(this.value)">
     自分で書く(無料)</label>
 </div>
@@ -129,45 +129,45 @@
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_F}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_F} checked{/if}>
     １９２ｐ{* [2018-06-03] 削除<span class="red">（オススメ）</span>*}</label>　<br />
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_G}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_G} checked{/if}>
-    ２０８ｐ<span class="red">一般的な書籍</span></label>　
+    ２０８ｐ<span class="red">一般的な書籍</span></label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_H}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_H} checked{/if}>
     ２２４ｐ　</label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_I}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_I} checked{/if}>
-    ２４０ｐ</label>　
+    ２４０ｐ</label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_J}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_J} checked{/if}>
     ２５６ｐ</label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_P}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_P} checked{/if}>
-    ２７２ｐ</label>　
+    ２７２ｐ</label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_Q}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_Q} checked{/if}>
     ２８８ｐ</label>
     <label><input name="input[{$smarty.const.DEF_EST_PAGE}]" type="radio" value="{$smarty.const.DEF_PAGE_R}"{if $arrInit[$smarty.const.DEF_EST_PAGE] == $smarty.const.DEF_PAGE_R} checked{/if}>
     ３２０ｐ</label>
      <br clear="clear">
   <span class="green-bk">（含まれるカラーページ）</span>
-<label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_B}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_B} checked{/if}>８ｐ</label>　
+<label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_B}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_B} checked{/if}>８ｐ</label>
 <label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_C}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_C} checked{/if}>１６ｐ</label>
-<label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_D}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_D} checked{/if}>全ページ</label>　
+<label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_D}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_D} checked{/if}>全ページ</label>
 <label><input name="input[{$smarty.const.DEF_EST_COLAR}]" type="radio" value="{$smarty.const.DEF_COLAR_A}"{if $arrInit[$smarty.const.DEF_EST_COLAR] == $smarty.const.DEF_COLAR_A} checked{/if}>なし</label>
-  
+
   </div>
 
   <div class="number">
     <h3>大きさ<span class="modal-q"><a href="https://www.publishing-house.jp/flow.html#09" target="_blank">?</a></span></h3>
     <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_A}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_A} checked{/if}>
     四六判<span class="red">（オススメ）</span></label>
- 
+
     <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_C}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_C} checked{/if}>
     Ａ５判</label>
-  
+
     <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_B}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_B} checked{/if}>
     Ｂ６判 </label>
 
-    
+
     <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_D}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_D} checked{/if}>
     Ｂ５判</label>
     <label><input name="input[{$smarty.const.DEF_EST_SIZE}]" type="radio" value="{$smarty.const.DEF_SIZE_S_E}"{if $arrInit[$smarty.const.DEF_EST_SIZE] == $smarty.const.DEF_SIZE_S_E} checked{/if}>
     Ａ４判</label> <br clear="clear">
-    
+
   </div>
 
 {* ▼[2018-06-03] 追加 *}
@@ -273,7 +273,7 @@
 <div>
     <h3>完成（印刷仕上がり）</h3>
     {if isset($arrErrMsg.date)}<font color="red">{$arrErrMsg.date}</font><br>{/if}
-    希望日時　　
+    希望日時
   {html_select_date
     prefix=""
     field_array="date"
@@ -301,19 +301,229 @@
     day_empty="--"
     display_years=no display_months=no}日<br>
   <span>※４カ月以内の完成をご希望の場合は、特急料金が加算されます。</span></div>
-  <p align="center" class="input1"><input type="submit" name="btnInput" value="この内容で見積もりする。"></p>
+  <p align="center" class="input1">
+    <input type="button" id="btnCalcAjax" value="この内容で見積もりする。" onclick="doAjaxCalc()">
+    <noscript><input type="submit" name="btnInput" value="この内容で見積もりする。"></noscript>
+  </p>
 </form>
+
+{* ========================================
+   セクション2: 見積結果（初期非表示）
+   ======================================== *}
+<div id="resultSection" style="display:none;">
+  <h4>2.見積結果</h4>
+  <div>
+    <h3>お客様の御見積の合計金額をご案内します。</h3>
+    <div class="plz" id="resultSum"></div>
+  </div>
+<div class="auto-form">
+<div>
+  <h5>内訳</h5>
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr><th>執筆費</th>
+        <td id="val_write"></td></tr>
+    <tr id="row_haste" style="display:none;">
+        <th>特急料金</th>
+        <td id="val_haste"></td></tr>
+    <tr><th>印刷・製本費</th>
+        <td id="val_books"></td></tr>
+    <tr><th>本文レイアウト費</th>
+        <td id="val_dtp"></td></tr>
+    <tr><th>流通費</th>
+        <td id="val_sales"></td></tr>
+    <tr><th>図版イラスト費</th>
+        <td id="val_image"></td></tr>
+    <tr><th>新聞広告費</th>
+        <td id="val_ad"></td></tr>
+    <tr><th>書店用ＦＡＸ送信費</th>
+        <td id="val_fax"></td></tr>
+    <tr><th>装幀費</th>
+        <td id="val_fm"></td></tr>
+    <tr><th>取材日当</th>
+        <td id="val_day"></td></tr>
+    <tr><th>進行管理費</th>
+        <td id="val_type"></td></tr>
+    <tr><th>自伝動画作成</th>
+        <td id="val_movie"></td></tr>
+    <tr><th>消費税</th>
+        <td id="val_tax"></td></tr>
+    <tr><th>交通費</th>
+        <td id="val_area"></td></tr>
+    <tr><th>合計</th>
+        <td id="val_sum"></td></tr>
+  </table>
+</div>
+<div>
+  <h5>本の仕様予定</h5>
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr><th>執筆</th>
+        <td id="disp_write"></td></tr>
+    <tr><th>校正</th>
+        <td id="disp_emend"></td></tr>
+    <tr><th>書籍体裁</th>
+        <td id="disp_cover"></td></tr>
+    <tr><th>書籍の種類</th>
+        <td id="disp_type"></td></tr>
+    <tr><th>装幀(必ず付属されます)</th>
+        <td id="disp_fm"></td></tr>
+    <tr><th>部数</th>
+        <td id="disp_circulate"></td></tr>
+    <tr><th>ページ数</th>
+        <td id="disp_page"></td></tr>
+    <tr><th>本の大きさ</th>
+        <td id="disp_size"></td></tr>
+    <tr><th>お住いの地域</th>
+        <td id="disp_area"></td></tr>
+    <tr><th>取材日数</th>
+        <td id="disp_day"></td></tr>
+    <tr><th>新聞広告</th>
+        <td id="disp_ad"></td></tr>
+    <tr><th>書店流通FAX送信</th>
+        <td id="disp_fax"></td></tr>
+    <tr><th>販売形態</th>
+        <td id="disp_sales"></td></tr>
+    <tr><th>自伝動画作成</th>
+        <td id="disp_movie"></td></tr>
+    <tr><th>お渡し希望日時</th>
+        <td id="disp_date"></td></tr>
+  </table>
+</div>
+</div>
+  <div align="center">上記の内容で、よろしければ、ボタンを押してください</div>
+  <div class="entry">
+  <p align="center" class="input1">
+    <input type="button" value="見積内容を変更する"
+           class="input2-1"
+           onclick="backToInput()">
+  </p>
+  <p align="center" class="input2">
+    <input type="button" id="btnShowOrder"
+           value="この計算結果で「注文する」"
+           class="input3-1 btn-order"
+           onclick="showUserForm('order')">
+    <input type="button" id="btnShowInquiry"
+           value="この計算結果で「問い合わせる」"
+           onclick="showUserForm('inquiry')"  class="btn-contact">
+  </p>
+  </div>
+</div>
+
+{* ========================================
+   セクション3: お客様情報入力（初期非表示）
+   ======================================== *}
+<div id="userInfoSection" style="display:none;">
+  <h4>3.お客様情報</h4>
+  <div id="userInfoErrors"></div>
+  <table border="0" cellspacing="0" cellpadding="0" class="mail">
+    <tr>
+      <th>お名前※</th>
+      <td class="form-in">
+        <span class="err" id="err_name" style="color:red;"></span>
+        <input type="text" id="user_name" name="user_name" />
+      </td>
+    </tr>
+    <tr>
+      <th>E-mail※</th>
+      <td class="form-in">
+        <span class="err" id="err_email" style="color:red;"></span>
+        <input type="text" id="user_email" name="user_email" />
+      </td>
+    </tr>
+    <tr>
+      <th>住所※</th>
+      <td class="form-in">
+        <span class="err" id="err_address" style="color:red;"></span>
+        <textarea id="user_address" name="user_address"
+                  cols="30" rows="2"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <th>電話番号※</th>
+      <td class="form-in">
+        <span class="err" id="err_tel" style="color:red;"></span>
+        <input type="text" id="user_tel" name="user_tel" />
+      </td>
+    </tr>
+    <tr>
+      <th>ご要望があればご記入ください</th>
+      <td class="form-in">
+        <textarea id="user_request" name="user_request"
+                  cols="30" rows="5"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <th>ライティングからの連絡</th>
+      <td>
+        <input name="user_contact" type="radio"
+               value="{$smarty.const.DEF_CONTACT_MAIL}" checked />
+        メール
+        <input name="user_contact" type="radio"
+               value="{$smarty.const.DEF_CONTACT_TEL}" />
+        電話
+      </td>
+    </tr>
+  </table>
+  <div class"entry">
+  <p align="center" class="input1">
+    <input type="button" value="戻る"
+           class="input2-1"
+           onclick="backToResult()">
+    <input type="button" id="btnSubmitFinal"
+           value="この内容で送信する"
+           class="input3-1"
+           onclick="doAjaxSubmit()">
+  </p>
+</div>
+</div>
+
+{* ========================================
+   セクション4: 送信完了（初期非表示）
+   ======================================== *}
+<div id="completeSection" style="display:none;">
+  <h4>送信完了</h4>
+  <div id="completeMessage"></div>
+</div>
 
 </div>
 </div>
+
+{* =====================================================================
+   JavaScript
+   ポイント: Smarty定数は {literal} の外で変数に代入してから使う
+   ===================================================================== *}
 <script type="text/javascript">
+// Smarty定数をJavaScript変数に展開
+var DEF_WRITE_C = {$smarty.const.DEF_WRITE_C};
+var EST_WRITE = {$smarty.const.DEF_EST_WRITE};
+var EST_EMEND = {$smarty.const.DEF_EST_EMEND};
+var EST_BOOKS = {$smarty.const.DEF_EST_BOOKS};
+var EST_COVER = {$smarty.const.DEF_EST_COVER};
+var EST_CIRCULATE = {$smarty.const.DEF_EST_CIRCULATE};
+var EST_PAGE = {$smarty.const.DEF_EST_PAGE};
+var EST_SIZE = {$smarty.const.DEF_EST_SIZE};
+var EST_SALES = {$smarty.const.DEF_EST_SALES};
+var EST_DTP = {$smarty.const.DEF_EST_DTP};
+var EST_FM = {$smarty.const.DEF_EST_FM};
+var EST_HASTE = {$smarty.const.DEF_EST_HASTE};
+var EST_DAY = {$smarty.const.DEF_EST_DAY};
+var EST_IMAGE = {$smarty.const.DEF_EST_IMAGE};
+var EST_AREA = {$smarty.const.DEF_EST_AREA};
+var EST_AD = {$smarty.const.DEF_EST_AD};
+var EST_FAX = {$smarty.const.DEF_EST_FAX};
+var EST_TYPE = {$smarty.const.DEF_EST_TYPE};
+var EST_COLAR = {$smarty.const.DEF_EST_COLAR};
+var EST_MOVIE = {$smarty.const.DEF_EST_MOVIE};
+var EST_TAX = {$smarty.const.DEF_EST_TAX};
+var FORM_INPUT_NAME = "input[" + EST_WRITE + "]";
+
 {literal}
+// ===== 既存関数 =====
+
 function checkEmendMode(writeValue) {
     var kaniRadio = document.getElementById('emend_kani');
     var honkakuRadio = document.getElementById('emend_honkaku');
-    
-    // DEF_WRITE_Cを展開するために一時的にliteralを閉じる
-    if (writeValue == "{/literal}{$smarty.const.DEF_WRITE_C}{literal}") {
+
+    if (writeValue == DEF_WRITE_C) {
         kaniRadio.disabled = false;
     } else {
         honkakuRadio.checked = true;
@@ -323,14 +533,270 @@ function checkEmendMode(writeValue) {
 
 // ページ読み込み時の初期状態設定
 window.onload = function() {
-    // 【ここが最重要】定数部分でliteralを閉じて再開する
-    var currentWrite = document.querySelector('input[name="input[{/literal}{$smarty.const.DEF_EST_WRITE}{literal}]"]:checked');
-    
-    // ここから下のブロックはそのまま残ります
+    var currentWrite = document.querySelector('input[name="' + FORM_INPUT_NAME + '"]:checked');
     if (currentWrite) {
         checkEmendMode(currentWrite.value);
     }
 };
+
+// ===== 1ページ化 追加関数群 =====
+
+// 現在の送信モード（order / inquiry）
+var submitMode = '';
+
+// 数値をカンマ区切りにする
+function numberFormat(num) {
+    return Number(num).toLocaleString();
+}
+
+// セクションをスライド表示する
+function slideDown(el) {
+    el.style.display = 'block';
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// セクションを非表示にする
+function slideUp(el) {
+    el.style.display = 'none';
+}
+
+// フォームデータを取得
+function getFormData() {
+    var form = document.forms['frmInput'];
+    var formData = new FormData(form);
+    formData.append('ajax_calc', '1');
+    return formData;
+}
+
+// ★ AJAX見積り計算
+function doAjaxCalc() {
+    var btn = document.getElementById('btnCalcAjax');
+    btn.disabled = true;
+    btn.value = '計算中...';
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '', true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            btn.disabled = false;
+            btn.value = 'この内容で見積もりする。';
+
+            if (xhr.status === 200) {
+                try {
+                    var res = JSON.parse(xhr.responseText);
+                } catch(e) {
+                    alert('サーバーからの応答が不正です。');
+                    return;
+                }
+                if (res.success) {
+                    showResult(res);
+                } else {
+                    if (res.errors && res.errors.date) {
+                        alert(res.errors.date);
+                    } else if (res.errors && res.errors.message) {
+                        alert(res.errors.message);
+                    }
+                }
+            } else {
+                alert('通信エラーが発生しました。');
+            }
+        }
+    };
+    xhr.send(getFormData());
+}
+
+// 見積結果を表示
+function showResult(res) {
+    // 金額内訳を表示
+    document.getElementById('resultSum').innerHTML
+        = numberFormat(res.sum) + ' 円　（税込・送料別）';
+    document.getElementById('val_write').innerHTML
+        = numberFormat(res.values[EST_WRITE]) + '円';
+    document.getElementById('val_books').innerHTML
+        = numberFormat(res.values[EST_BOOKS]) + '円';
+    document.getElementById('val_dtp').innerHTML
+        = numberFormat(res.values[EST_DTP]) + '円';
+    document.getElementById('val_sales').innerHTML
+        = numberFormat(res.values[EST_SALES]) + '円';
+    document.getElementById('val_image').innerHTML
+        = numberFormat(res.values[EST_IMAGE]) + '円';
+    document.getElementById('val_ad').innerHTML
+        = numberFormat(res.values[EST_AD]) + '円';
+    document.getElementById('val_fax').innerHTML
+        = numberFormat(res.values[EST_FAX]) + '円';
+    document.getElementById('val_fm').innerHTML
+        = numberFormat(res.values[EST_FM]) + '円';
+    document.getElementById('val_day').innerHTML
+        = numberFormat(res.values[EST_DAY]) + '円';
+    document.getElementById('val_type').innerHTML
+        = numberFormat(res.values[EST_TYPE]) + '円';
+    document.getElementById('val_movie').innerHTML
+        = numberFormat(res.values[EST_MOVIE]) + '円';
+    document.getElementById('val_tax').innerHTML
+        = numberFormat(res.values[EST_TAX]) + '円';
+    document.getElementById('val_area').innerHTML
+        = numberFormat(res.values[EST_AREA]) + '円';
+    document.getElementById('val_sum').innerHTML
+        = numberFormat(res.sum) + '円';
+
+    // 特急料金の行（条件付き表示）
+    if (res.values[EST_HASTE] > 0) {
+        document.getElementById('row_haste').style.display = '';
+        document.getElementById('val_haste').innerHTML
+            = numberFormat(res.values[EST_HASTE]) + '円';
+    } else {
+        document.getElementById('row_haste').style.display = 'none';
+    }
+
+    // 本の仕様予定を表示
+    var d = res.dispStr;
+    if (d && d.input) {
+        document.getElementById('disp_write').innerHTML = d.input[EST_WRITE] || '';
+        document.getElementById('disp_emend').innerHTML = d.input[EST_EMEND] || '';
+        document.getElementById('disp_cover').innerHTML = d.input[EST_COVER] || '';
+        document.getElementById('disp_type').innerHTML = d.input[EST_TYPE] || '';
+        document.getElementById('disp_fm').innerHTML = d.input[EST_FM] || '';
+        document.getElementById('disp_circulate').innerHTML = d.input[EST_CIRCULATE] || '';
+        document.getElementById('disp_page').innerHTML = d.input[EST_PAGE] || '';
+        document.getElementById('disp_size').innerHTML = d.input[EST_SIZE] || '';
+        document.getElementById('disp_area').innerHTML = d.input[EST_AREA] || '';
+        document.getElementById('disp_day').innerHTML = d.input[EST_DAY] || '';
+        document.getElementById('disp_ad').innerHTML = d.input[EST_AD] || '';
+        document.getElementById('disp_fax').innerHTML = d.input[EST_FAX] || '';
+        document.getElementById('disp_sales').innerHTML = d.input[EST_SALES] || '';
+        document.getElementById('disp_movie').innerHTML = d.input[EST_MOVIE] || '';
+    }
+    if (d && d.date) {
+        document.getElementById('disp_date').innerHTML = d.date;
+    }
+
+    // 個人情報セクションを隠す（再計算時）
+    slideUp(document.getElementById('userInfoSection'));
+    slideUp(document.getElementById('completeSection'));
+
+    // 結果セクションを表示
+    slideDown(document.getElementById('resultSection'));
+}
+
+// 「注文する」「問い合わせる」ボタン押下
+function showUserForm(mode) {
+    submitMode = mode;
+    var label = (mode === 'order')
+        ? 'この内容で「注文する」' : 'この内容で「問い合わせる」';
+    document.getElementById('btnSubmitFinal').value = label;
+    slideDown(document.getElementById('userInfoSection'));
+}
+
+// 「入力内容を変更する」ボタン
+function backToInput() {
+    slideUp(document.getElementById('resultSection'));
+    slideUp(document.getElementById('userInfoSection'));
+    slideUp(document.getElementById('completeSection'));
+    document.getElementById('btnCalcAjax')
+        .scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// 個人情報セクション「戻る」
+function backToResult() {
+    slideUp(document.getElementById('userInfoSection'));
+    document.getElementById('resultSection')
+        .scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+// ★ AJAX送信（注文 or 問い合わせ）
+function doAjaxSubmit() {
+    // 送信前の確認ダイアログ
+    var confirmMsg = (submitMode === 'order')
+        ? 'この内容で注文を送信します。よろしいですか？'
+        : 'この内容で問い合わせを送信します。よろしいですか？';
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+
+    var btn = document.getElementById('btnSubmitFinal');
+    btn.disabled = true;
+
+    // エラー表示クリア
+    var errSpans = document.querySelectorAll('.err');
+    for (var i = 0; i < errSpans.length; i++) {
+        errSpans[i].innerHTML = '';
+    }
+    document.getElementById('userInfoErrors').innerHTML = '';
+
+    // 見積入力フォームのデータを取得
+    var form = document.forms['frmInput'];
+    var formData = new FormData(form);
+
+    // お客様情報を追加
+    formData.append('user[name]',
+        document.getElementById('user_name').value);
+    formData.append('user[email]',
+        document.getElementById('user_email').value);
+    formData.append('user[address]',
+        document.getElementById('user_address').value);
+    formData.append('user[tel]',
+        document.getElementById('user_tel').value);
+    formData.append('user[request]',
+        document.getElementById('user_request').value);
+
+    // 連絡方法
+    var contactRadios = document.getElementsByName('user_contact');
+    for (var i = 0; i < contactRadios.length; i++) {
+        if (contactRadios[i].checked) {
+            formData.append('user[contact]', contactRadios[i].value);
+            break;
+        }
+    }
+
+    // 送信モード
+    formData.append('ajax_submit', submitMode);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '', true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            btn.disabled = false;
+            if (xhr.status === 200) {
+                try {
+                    var res = JSON.parse(xhr.responseText);
+                } catch(e) {
+                    alert('サーバーからの応答が不正です。');
+                    return;
+                }
+                if (res.success) {
+                    slideUp(document.getElementById('userInfoSection'));
+                    slideUp(document.getElementById('resultSection'));
+                    document.getElementById('completeMessage')
+                        .innerHTML = '<p>' + res.message + '</p>';
+                    slideDown(document.getElementById('completeSection'));
+                    // 送信完了後、再送信を防止
+                    btn.disabled = true;
+                } else {
+                    if (res.errors) {
+                        if (res.errors.user) {
+                            var ue = res.errors.user;
+                            if (ue.name)
+                                document.getElementById('err_name').innerHTML = ue.name;
+                            if (ue.email)
+                                document.getElementById('err_email').innerHTML = ue.email;
+                            if (ue.address)
+                                document.getElementById('err_address').innerHTML = ue.address;
+                            if (ue.tel)
+                                document.getElementById('err_tel').innerHTML = ue.tel;
+                        }
+                        if (res.errors.message) {
+                            document.getElementById('userInfoErrors')
+                                .innerHTML = '<font color="red">' + res.errors.message + '</font>';
+                        }
+                    }
+                }
+            } else {
+                alert('通信エラーが発生しました。');
+            }
+        }
+    };
+    xhr.send(formData);
+}
 {/literal}
 </script>
 {include file='Footer.tpl'}
