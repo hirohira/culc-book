@@ -1,4 +1,5 @@
 <?php
+ob_start();
 // ini_set('display_errors', 1);
 // error_reporting(E_ALL);
 /*****************************************************************************
@@ -76,6 +77,84 @@ class CFormAgent
 	 */
 	function doProcess()
 	{
+		// ★ AJAX見積り計算リクエスト
+		if (isset($this->_arrPostData['ajax_calc'])) {
+			// 入力値チェック
+			$errors = array();
+			if (!$this->fncCheckData_Input()) {
+				$errors = $this->_arrErrMsg;
+			}
+
+			if (empty($errors)) {
+				// 見積り計算
+				$this->fncCalc();
+
+				// 表示用文字列を取得
+				$dispStr = $this->fncMakeDispStr();
+
+				// JSON形式で返却
+				while (ob_get_level() > 0) { ob_end_clean(); } 
+				header('Content-Type: application/json; charset=utf-8');
+				echo json_encode(array(
+					'success' => true,
+					'values'  => $this->_arrValue,
+					'sum'     => $this->_intSumValue,
+					'dispStr' => $dispStr,
+					'tax'     => $this->_arrValue[DEF_EST_TAX]
+				));
+				exit;
+			} else {
+				while (ob_get_level() > 0) { ob_end_clean(); } 
+				header('Content-Type: application/json; charset=utf-8');
+				echo json_encode(array(
+					'success' => false,
+					'errors'  => $errors
+				));
+				exit;
+			}
+		}
+
+		// ★ AJAX送信リクエスト（注文 or 問い合わせ）
+		if (isset($this->_arrPostData['ajax_submit'])) {
+			$isOrder = ($this->_arrPostData['ajax_submit'] === 'order');
+
+			// 見積り計算（メール本文に必要）
+			$this->fncCalc();
+
+			// お客様情報チェック
+			if (!$this->fncCheckData_cnfrm()) {
+				while (ob_get_level() > 0) { ob_end_clean(); } 
+				header('Content-Type: application/json; charset=utf-8');
+				echo json_encode(array(
+					'success' => false,
+					'errors'  => $this->_arrErrMsg
+				));
+				exit;
+			}
+
+			// CSVに保存
+			$this->saveToCSV();
+
+			// メール送信
+			$mailOk = $this->fncSendMail_admin($isOrder)
+			       && $this->fncSendMail_user($isOrder);
+
+			while (ob_get_level() > 0) { ob_end_clean(); } 
+			header('Content-Type: application/json; charset=utf-8');
+			if ($mailOk) {
+				echo json_encode(array(
+					'success' => true,
+					'message' => $isOrder ? I00001 : I00002
+				));
+			} else {
+				echo json_encode(array(
+					'success' => false,
+					'errors'  => array('message' => $isOrder ? E00008 : E00009)
+				));
+			}
+			exit;
+		}
+
 		// お見積りボタン押下
 		if (isset($this->_arrPostData['btnInput'])) {
 			// 入力値チェック
